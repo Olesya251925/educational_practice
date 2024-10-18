@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Карта с местоположением</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="src/styles/home_screen.css">
+    <link rel="stylesheet" href="src/styles/location.css">
+    <link rel="stylesheet" href="src/styles/cap.css">
+</head>
+
+<body>
+    <header>
+        <h1>Glow and Shine</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="location.html" class="active">Местоположение</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div id="map"></div>
+
+    <footer>
+        <p>&copy; 2024 Glow and Shine. Все права защищены.</p>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        var map = L.map('map').setView([54.7441, 86.8343], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError, {
+                    enableHighAccuracy: true
+                });
+            } else {
+                alert("Геолокация не поддерживается этим браузером.");
+            }
+        }
+
+        function showPosition(position) {
+            var lat = position.coords.latitude;
+            var lon = position.coords.longitude;
+
+            console.log("Текущее местоположение:", lat, lon);
+
+            map.setView([lat, lon], 13);
+
+            L.marker([lat, lon]).addTo(map)
+                .bindPopup('Вы находитесь здесь')
+                .openPopup();
+        }
+
+        function showError(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("Пользователь отклонил запрос на получение местоположения. Пожалуйста, предоставьте доступ к геолокации в настройках браузера.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("Информация о местоположении недоступна. Пожалуйста, проверьте настройки вашего устройства.");
+                    break;
+                case error.TIMEOUT:
+                    alert("Запрос на получение местоположения истек. Пожалуйста, попробуйте еще раз.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert("Произошла неизвестная ошибка. Пожалуйста, попробуйте еще раз.");
+                    break;
+            }
+        }
+
+        getLocation();
+    </script>
+</body>
+
+</html>

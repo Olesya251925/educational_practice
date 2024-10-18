@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет</title>
+
+    <link rel="stylesheet" href="src/styles/cap.css">
+    <link rel="stylesheet" href="src/styles/profile.css">
+</head>
+
+<body>
+    <header>
+        <h1>Glow and Shine</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="ecological-tips.html">Экологические рекомендации</a></li>
+                <li><a href="profile.html" class="active">Личный кабинет</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="personal-account" class="account-section">
+            <h1>Добро пожаловать в личный кабинет!</h1>
+            <div class="account-info">
+                <div class="account-avatar">
+                    <img src="avatar.png" alt="Аватар пользователя" class="avatar-image">
+                </div>
+                <div class="account-details">
+                    <h2>Имя пользователя</h2>
+                    <p>Email: user@example.com</p>
+                    <button id="logout-btn">Выйти</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="src/db/profile.js"></script>
+</body>
+
+</html>

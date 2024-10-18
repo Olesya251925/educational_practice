@@ -1,0 +1,46 @@
+.face-container {
+    display: flex;
+    align-items: stretch;
+    margin-bottom: 40px;
+}
+
+.face-image-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.face-image {
+    width: 95%;
+    height: 47%;
+    object-fit: contain;
+    margin-bottom: 10px;
+}
+
+.face-image:last-child {
+    margin-bottom: 0;
+}
+
+.face-text-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 10px;
+}
+
+@media (max-width: 768px) {
+    .face-container {
+        flex-direction: column;
+    }
+
+    .face-image-container {
+        order: 2;
+    }
+
+    .face-text-container {
+        order: 1;
+    }
+}

@@ -1,0 +1,124 @@
+.account-section {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 40px;
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.account-section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+}
+
+.account-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 20px;
+}
+
+.account-avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.avatar-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.account-details {
+    flex: 1;
+    margin-left: 20px;
+}
+
+.account-details h2 {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.account-details p {
+    font-size: 18px;
+    color: #666;
+}
+
+#logout-btn {
+    padding: 12px 25px;
+    font-size: 16px;
+    background-color: #FF6347;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+#logout-btn:hover {
+    background-color: #ff4b2b;
+    transform: translateY(-3px);
+}
+
+/* Медиазапрос для мобильных устройств */
+@media (max-width: 768px) {
+    .account-info {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .account-avatar {
+        margin-bottom: 20px;
+    }
+}
+
+
+
+/* styles.css */
+.modal {
+    display: none;
+    /* Скрыто по умолчанию */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    /* Включает прокрутку, если необходимо */
+    background-color: rgb(0, 0, 0);
+    /* Цвет фона */
+    background-color: rgba(0, 0, 0, 0.4);
+    /* Полупрозрачный черный */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    /* 15% сверху и по центру */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    /* Ширина модального окна */
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
