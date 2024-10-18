@@ -8,6 +8,7 @@
 
     <link rel="stylesheet" href="src/styles/cap.css">
     <link rel="stylesheet" href="src/styles/profile.css">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
 </head>
 
 <body>
@@ -22,23 +23,17 @@
         </nav>
     </header>
 
-    <main>
-        <section id="personal-account" class="account-section">
-            <h1>Добро пожаловать в личный кабинет!</h1>
-            <div class="account-info">
-                <div class="account-avatar">
-                    <img src="avatar.png" alt="Аватар пользователя" class="avatar-image">
-                </div>
-                <div class="account-details">
-                    <h2>Имя пользователя</h2>
-                    <p>Email: user@example.com</p>
-                    <button id="logout-btn">Выйти</button>
-                </div>
-            </div>
-        </section>
-    </main>
+    <!-- Модальное окно -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Войти через Google</h2>
+            <button id="googleLoginButton" onclick="handleGoogleLogin()">Войти через Google</button>
+        </div>
+    </div>
 
     <script src="src/db/profile.js"></script>
+    <script src="src/db/server.js"></script>
 </body>
 
 </html>
