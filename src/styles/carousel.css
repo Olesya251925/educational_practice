@@ -1,0 +1,76 @@
+#gallery {
+    text-align: center;
+}
+
+.carousel {
+    position: relative;
+    width: 90%;
+    margin: auto;
+    overflow: hidden;
+}
+
+.carousel-images {
+    display: flex;
+    transition: transform 0.5s ease;
+}
+
+.carousel-images img {
+    width: 85%;
+    height: 300px;
+    margin: 0 5px;
+    border-radius: 5px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+    user-select: none;
+}
+
+.carousel-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, 0.8);
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    font-size: 20px;
+    z-index: 1;
+}
+
+.prev {
+    left: 10px;
+}
+
+.next {
+    right: 10px;
+}
+
+.photo-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+    flex-direction: column;
+}
+
+.photo-modal-img {
+    width: 30%;
+    height: auto;
+    border-radius: 5px;
+    box-shadow: 0 1px 5px rgba(255, 255, 255, 0.5);
+}
+
+.close-photo-modal {
+    position: absolute;
+    top: 20px;
+    right: 40px;
+    background: transparent;
+    border: none;
+    font-size: 40px;
+    color: white;
+    cursor: pointer;
+}

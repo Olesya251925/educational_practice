@@ -1,90 +1,27 @@
-.account-section {
-    max-width: 800px;
-    margin: 50px auto;
-    padding: 40px;
-    background-color: #fff;
-    border-radius: 15px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+body {
+    font-family: Arial, sans-serif;
 }
 
-.account-section:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
-}
-
-.account-info {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-top: 20px;
-}
-
-.account-avatar {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.avatar-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.account-details {
-    flex: 1;
-    margin-left: 20px;
-}
-
-.account-details h2 {
-    font-size: 28px;
-    color: #333;
-    margin-bottom: 10px;
-}
-
-.account-details p {
-    font-size: 18px;
-    color: #666;
-}
-
-#logout-btn {
-    padding: 12px 25px;
-    font-size: 16px;
-    background-color: #FF6347;
-    color: #fff;
+#registerButton {
+    background-color: #8A53FF;
+    color: white;
+    padding: 12px 24px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
+    font-size: 18px;
+    margin: 20px;
+    transition: background-color 0.3s, transform 0.2s;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-#logout-btn:hover {
-    background-color: #ff4b2b;
-    transform: translateY(-3px);
+#registerButton:hover {
+    background-color: #7A43E1;
+    transform: translateY(-2px);
 }
 
-/* Медиазапрос для мобильных устройств */
-@media (max-width: 768px) {
-    .account-info {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-
-    .account-avatar {
-        margin-bottom: 20px;
-    }
-}
-
-
-
-/* styles.css */
 .modal {
     display: none;
-    /* Скрыто по умолчанию */
     position: fixed;
     z-index: 1;
     left: 0;
@@ -92,21 +29,28 @@
     width: 100%;
     height: 100%;
     overflow: auto;
-    /* Включает прокрутку, если необходимо */
-    background-color: rgb(0, 0, 0);
-    /* Цвет фона */
-    background-color: rgba(0, 0, 0, 0.4);
-    /* Полупрозрачный черный */
+    background-color: rgba(0, 0, 0, 0.6);
 }
 
 .modal-content {
-    background-color: #fefefe;
-    margin: 15% auto;
-    /* 15% сверху и по центру */
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    /* Ширина модального окна */
+    background-color: #ffffff;
+    margin: 10% auto;
+    padding: 40px;
+    border-radius: 10px;
+    width: 400px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.5s;
+    text-align: center;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 .close {
@@ -121,4 +65,132 @@
     color: black;
     text-decoration: none;
     cursor: pointer;
+}
+
+h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+}
+
+#googleLoginButton {
+    background-color: #f47442;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    margin-top: 20px;
+    transition: background-color 0.3s, transform 0.2s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 100%;
+}
+
+#googleLoginButton:hover {
+    background-color: #3568e8;
+    transform: translateY(-2px);
+}
+
+#logoutButton {
+    background-color: #FF4C4C;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    margin-left: 10px;
+    transition: background-color 0.3s, transform 0.2s;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+#logoutButton:hover {
+    background-color: #e04444;
+    transform: translateY(-2px);
+}
+
+#profileContainer {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    padding: 20px;
+    margin: 20px auto;
+    width: 80%;
+    border-radius: 10px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+#profileContainer img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 30px;
+    cursor: pointer;
+}
+
+.profile-details {
+    flex-grow: 1;
+}
+
+.profile-details p {
+    font-size: 18px;
+    color: #333;
+    margin: 10px 0;
+}
+
+.profile-details input[type="text"],
+.profile-details input[type="number"],
+.profile-details input[type="file"] {
+    font-size: 16px;
+    padding: 8px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+}
+
+.profile-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.save-button,
+#logoutButton,
+#editButton {
+    background-color: #8A53FF;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.save-button:hover,
+#logoutButton:hover,
+#editButton:hover {
+    background-color: #6A42CC;
+    transform: translateY(-2px);
+}
+
+#backButton {
+    background-color: #FF6B6B;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-right: 10px;
+}
+
+#backButton:hover {
+    background-color: #e55a5a;
+    transform: translateY(-2px);
 }

@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="src/styles/hair_and_video.css">
     <link rel="stylesheet" href="src/styles/facial_treatment.css">
     <link rel="stylesheet" href="src/styles/cap.css">
+    <link rel="stylesheet" href="src/styles/carousel.css">
 
 </head>
 
@@ -73,7 +74,7 @@
             </div>
             <div class="video-container">
                 <video id="third-educational-video" class="educational-video" muted autoplay>
-                    <source src="https://videos.pexels.com/video-files/4264869/4264869-uhd_3840_2160_30fps.mp4"
+                    <source src="https://videos.pexels.com/video-files/8225735/8225735-hd_1920_1080_25fps.mp4"
                         type="video/mp4">
                     Ваш браузер не поддерживает видео тег.
                 </video>
@@ -123,10 +124,27 @@
             </div>
         </section>
 
-        <section id="contact">
-            <h2>Связаться с нами</h2>
-            <p>Найдите ближайший салон красоты и свяжитесь с ним.</p>
+        <section id="gallery">
+            <h2>Фотогалерея</h2>
+            <div class="carousel">
+                <button class="carousel-button prev">❮</button>
+                <div class="carousel-images">
+                    <img src="src/photo/1.png" alt="Image 1">
+                    <img src="src/photo/2.png" alt="Image 2">
+                    <img src="src/photo/3.png" alt="Image 3">
+                    <img src="src/photo/4.png" alt="Image 4">
+                    <img src="src/photo/5.png" alt="Image 5">
+                    <img src="src/photo/6.png" alt="Image 6">
+                    <img src="src/photo/7.png" alt="Image 7">
+                    <img src="src/photo/8.png" alt="Image 8">
+                    <img src="src/photo/9.png" alt="Image 9">
+                    <img src="src/photo/11.png" alt="Image 11">
+                    <img src="src/photo/10.png" alt="Image 10">
+                </div>
+                <button class="carousel-button next">❯</button>
+            </div>
         </section>
+
     </main>
 
     <footer>
@@ -134,6 +152,7 @@
     </footer>
 
     <script src="src/script/video_script.js"></script>
+    <script src="src/script/carousel.js"></script>
     <script src="src/db/profile.js"></script>
 </body>
 
