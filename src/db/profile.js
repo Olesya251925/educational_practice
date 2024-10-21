@@ -70,14 +70,22 @@ function loadProfileData(token) {
                     <p><strong>Email:</strong> <span id="profileEmail">${profile.email}</span></p>
                     <p><strong>Имя:</strong> <span id="profileGivenName">${profile.given_name}</span></p>
                     <p><strong>Фамилия:</strong> <span id="profileFamilyName">${profile.family_name}</span></p>
-                    <p><label for="city">Город:</label>
-                    <input type="text" id="city" placeholder="Введите ваш город"></p>
-                    <p><label for="age">Возраст:</label>
-                    <input type="number" id="age" placeholder="Введите ваш возраст"></p>
-                    <p><label for="uploadPhoto">Изменить фото:</label>
-                    <input type="file" id="uploadPhoto" accept="image/*" onchange="previewAndUploadPhoto(event)"></p>
-                    <button class="save-button" onclick="saveProfileData()">Сохранить</button>
-                    <button id="logoutButton" onclick="logout()">Выйти</button>
+                    <div id="editSection" style="display: none;">
+                        <p><label for="city">Город:</label>
+                        <input type="text" id="city" placeholder="Введите ваш город"></p>
+                        <p><label for="age">Возраст:</label>
+                        <input type="number" id="age" placeholder="Введите ваш возраст"></p>
+                        <p><label for="uploadPhoto">Изменить фото:</label>
+                        <input type="file" id="uploadPhoto" accept="image/*" onchange="previewAndUploadPhoto(event)"></p>
+                        <div class="edit-buttons">
+                            <button class="save-button" onclick="saveProfileData()">Сохранить</button>
+                        </div>
+                    </div>
+                    <div class="profile-buttons">
+                        <button id="backButton" onclick="goBack()" style="display: none;">Назад</button>
+                        <button id="editButton" onclick="toggleEditProfile()">Редактировать профиль</button>
+                        <button id="logoutButton" onclick="handleGoogleLogout()">Выйти из аккаунта</button>
+                    </div>
                 </div>
             `;
 
@@ -87,6 +95,42 @@ function loadProfileData(token) {
         .catch(error => {
             console.error('Ошибка загрузки данных профиля:', error);
         });
+}
+
+// Функция для показа профиля
+function showProfile() {
+    document.getElementById('registerButton').style.display = 'none';
+    document.getElementById('logoutButton').style.display = 'block';
+}
+
+// Функция для показа кнопок авторизации
+function showAuthButtons() {
+    document.getElementById('registerButton').style.display = 'block';
+    document.getElementById('logoutButton').style.display = 'none';
+}
+function goBack() {
+    window.location.href = 'profile.html'; // Перенаправляем на страницу профиля
+}
+
+
+// Функция для переключения режима редактирования профиля
+function toggleEditProfile() {
+    const editSection = document.getElementById('editSection');
+    const editButton = document.getElementById('editButton');
+    const logoutButton = document.getElementById('logoutButton');
+    const backButton = document.getElementById('backButton'); // Получаем кнопку "Назад"
+
+    if (editSection.style.display === 'none') {
+        editSection.style.display = 'block';
+        editButton.style.display = 'none'; // Скрываем кнопку редактирования
+
+        backButton.style.display = 'block'; // Показываем кнопку "Назад"
+    } else {
+        editSection.style.display = 'none';
+        editButton.style.display = 'block'; // Показываем кнопку редактирования
+
+        backButton.style.display = 'none'; // Скрываем кнопку "Назад"
+    }
 }
 
 
@@ -120,6 +164,7 @@ function saveProfileData() {
         .then(data => {
             console.log('Ответ сервера:', data); // Добавлено для отладки
             alert(data.message);
+            toggleEditProfile(); // Скрыть секцию редактирования
         })
         .catch(error => {
             console.error('Ошибка сохранения данных профиля:', error);
@@ -127,17 +172,12 @@ function saveProfileData() {
         });
 }
 
-// Функция для выхода из аккаунта
-function logout() {
-    localStorage.removeItem('access_token');
-    handleGoogleLogout();
-}
-
 function handleGoogleLogout() {
     localStorage.removeItem('access_token');
     sessionStorage.clear();
-    showAuthButtons();
-    document.getElementById('profileContainer').innerHTML = '';
+    // Скрыть профиль и показать кнопки авторизации
+    document.getElementById('profileContainer').innerHTML = ''; // Очистить контейнер профиля
+    showAuthButtons(); // Показать кнопки авторизации
     console.log('Вы вышли из аккаунта.');
 }
 

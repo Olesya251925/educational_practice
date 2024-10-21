@@ -94,7 +94,6 @@ h2 {
 
 #logoutButton {
     background-color: #FF4C4C;
-    /* Можно выбрать другой цвет */
     color: white;
     padding: 12px 24px;
     border: none;
@@ -102,21 +101,15 @@ h2 {
     cursor: pointer;
     font-size: 18px;
     margin-left: 10px;
-    /* Отступ слева для расстояния между кнопками */
     transition: background-color 0.3s, transform 0.2s;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 #logoutButton:hover {
     background-color: #e04444;
-    /* Цвет при наведении */
     transform: translateY(-2px);
 }
 
-
-
-
-/* profile.css */
 #profileContainer {
     display: flex;
     justify-content: flex-start;
@@ -160,8 +153,15 @@ h2 {
     width: 100%;
 }
 
+.profile-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
 .save-button,
-#logoutButton {
+#logoutButton,
+#editButton {
     background-color: #8A53FF;
     color: #fff;
     padding: 10px 20px;
@@ -169,46 +169,28 @@ h2 {
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
-    margin-top: 15px;
-    width: 150px;
+    transition: background-color 0.3s, transform 0.2s;
 }
 
 .save-button:hover,
-#logoutButton:hover {
+#logoutButton:hover,
+#editButton:hover {
     background-color: #6A42CC;
+    transform: translateY(-2px);
 }
 
-#logoutButton {
-    margin-left: 20px;
-}
-
-
-.profile-buttons {
-    display: flex;
-    align-items: center;
-    /* Центрируем кнопки по вертикали */
-    margin-top: 15px;
-    /* Отступ сверху для разделения от других элементов */
-}
-
-.edit-button,
-#logoutButton {
-    background-color: #8A53FF;
-    color: white;
-    padding: 12px 24px;
+#backButton {
+    background-color: #FF6B6B;
+    color: #fff;
+    padding: 10px 20px;
     border: none;
-    border-radius: 8px;
+    border-radius: 5px;
     cursor: pointer;
-    font-size: 18px;
-    margin-left: 10px;
-    /* Отступ слева для расстояния между кнопками */
-    transition: background-color 0.3s, transform 0.2s;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    font-size: 16px;
+    margin-right: 10px;
 }
 
-.edit-button:hover,
-#logoutButton:hover {
-    background-color: #7A43E1;
-    /* Цвет при наведении */
+#backButton:hover {
+    background-color: #e55a5a;
     transform: translateY(-2px);
 }
