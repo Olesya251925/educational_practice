@@ -13,31 +13,26 @@
 
 <body>
     <header>
-        <h1>Glow and Shine</h1>
+        <h1><a href="index.html">Glow and Shine</a></h1>
         <nav>
             <ul>
-                <li><a href="index.html">Главная</a></li>
-                <li><a href="ecological-tips.html">Экологические рекомендации</a></li>
+                <li><a href="location.html" class="location-link">Местоположение</a></li>
+                <li><a href="#ecological-tips">Экологические рекомендации</a></li>
                 <li><a href="profile.html" class="active">Личный кабинет</a></li>
             </ul>
         </nav>
     </header>
 
-    <div id="buttonContainer">
-        <button id="registerButton">Зарегистрироваться</button>
-    </div>
-
     <div id="loginModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
-            <h2>Google</h2>
+            <h2>Регистрация</h2>
             <button id="googleLoginButton" onclick="handleGoogleLogin()">Войти через Google</button>
-            <button id="logoutButton"></button>
+
         </div>
     </div>
 
-    <div id="statusMessage"></div>
-    <div id="profileContainer"></div>
+    <div id="profileContainer" class="hidden"></div>
 
     <script src="src/db/profile.js"></script>
     <script src="src/db/server.js"></script>

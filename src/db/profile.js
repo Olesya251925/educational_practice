@@ -1,21 +1,17 @@
 const CLIENT_ID = '983844239183-u2borqdd4bh68b4ohvmsq5pmlh5bmo16.apps.googleusercontent.com';
+const REDIRECT_URI = 'http://127.0.0.1:5500/profile.html';
 
 // Инициализация Google Auth
 function initGoogleAuth() {
     gapi.load('auth2', function () {
-        gapi.auth2.init({
-            client_id: CLIENT_ID,
-        }).then(() => {
-            console.log('Google Auth инициализирован.');
-        }).catch((error) => {
-            console.error('Ошибка инициализации Google Auth:', error);
-        });
+        gapi.auth2.init({ client_id: CLIENT_ID })
+            .then(() => console.log('Google Auth инициализирован.'))
+            .catch(error => console.error('Ошибка инициализации Google Auth:', error));
     });
 }
 
-// Функция для перенаправления на страницу авторизации Google
+// Перенаправление на страницу авторизации Google
 function handleGoogleLogin() {
-    const REDIRECT_URI = 'http://127.0.0.1:5500/profile.html'; // Ваш реальный URI
     const authUrl = `https://accounts.google.com/o/oauth2/auth?response_type=token&client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=email%20profile&prompt=select_account`;
     window.location.href = authUrl;
 }
@@ -29,39 +25,24 @@ function handleAuthResult() {
         if (accessToken) {
             localStorage.setItem('access_token', accessToken);
             loadProfileData(accessToken);
-            showProfile();
         }
     } else if (savedToken) {
         loadProfileData(savedToken);
-        showProfile();
     } else {
-        showAuthButtons();
+        toggleProfileContainer(false);
+        showAuthModal();
     }
-}
-
-// Загрузка данных профиля пользователя
-function loadProfileFromDatabase(email) {
-    fetch(`http://localhost:3000/api/profile/${email}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data) {
-                document.getElementById('profileEmail').textContent = data.email;
-                document.getElementById('profileGivenName').textContent = data.givenName;
-                document.getElementById('profileFamilyName').textContent = data.familyName;
-                document.getElementById('city').value = data.city || ''; // Заполнение поля города
-                document.getElementById('age').value = data.age || ''; // Заполнение поля возраста
-                document.getElementById('profilePicture').src = data.picture || ''; // Подгрузка фото профиля
-            }
-        })
-        .catch(error => {
-            console.error('Ошибка подгрузки данных профиля из базы данных:', error);
-        });
 }
 
 // Вызов функции при успешной авторизации
 function loadProfileData(token) {
     fetch('https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=' + token)
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Ошибка загрузки данных профиля');
+            }
+            return response.json();
+        })
         .then(profile => {
             const email = profile.email;
             document.getElementById('profileContainer').innerHTML = `
@@ -89,133 +70,107 @@ function loadProfileData(token) {
                 </div>
             `;
 
+            const profileContainer = document.getElementById('profileContainer');
+            profileContainer.classList.remove('hidden'); // Показываем контейнер профиля
+
             // Загружаем данные из базы данных
             loadProfileFromDatabase(email);
         })
         .catch(error => {
             console.error('Ошибка загрузки данных профиля:', error);
+            const profileContainer = document.getElementById('profileContainer');
+            profileContainer.classList.add('hidden'); // Скрываем контейнер профиля при ошибке
+            showAuthModal(); // Открываем модальное окно
         });
 }
 
-// Функция для показа профиля
-function showProfile() {
-    document.getElementById('registerButton').style.display = 'none';
-    document.getElementById('logoutButton').style.display = 'block';
+// Загрузка данных профиля из базы данных
+function loadProfileFromDatabase(email) {
+    fetch(`http://localhost:3000/api/profile/${email}`)
+        .then(response => response.json())
+        .then(data => fillProfileData(data))
+        .catch(error => console.error('Ошибка подгрузки данных профиля из базы данных:', error));
 }
 
-// Функция для показа кнопок авторизации
-function showAuthButtons() {
-    document.getElementById('registerButton').style.display = 'block';
-    document.getElementById('logoutButton').style.display = 'none';
+// Заполнение данных профиля
+function fillProfileData(data) {
+    document.getElementById('profileEmail').textContent = data.email || '';
+    document.getElementById('profileGivenName').textContent = data.givenName || '';
+    document.getElementById('profileFamilyName').textContent = data.familyName || '';
+    document.getElementById('city').value = data.city || '';
+    document.getElementById('age').value = data.age || '';
+    document.getElementById('profilePicture').src = data.picture || '';
+    toggleProfileContainer(true); // Показываем контейнер профиля после загрузки данных
 }
+
+// Управление видимостью контейнера профиля
+function toggleProfileContainer(show) {
+    document.getElementById('profileContainer').classList.toggle('hidden', !show);
+}
+
+// Модальные окна
+function showAuthModal() {
+    document.getElementById("loginModal").style.display = "block";
+}
+
+function closeModal() {
+    document.getElementById("loginModal").style.display = "none";
+}
+
 function goBack() {
     window.location.href = 'profile.html'; // Перенаправляем на страницу профиля
 }
 
-
-// Функция для переключения режима редактирования профиля
+// Переключение режима редактирования профиля
 function toggleEditProfile() {
     const editSection = document.getElementById('editSection');
     const editButton = document.getElementById('editButton');
+    const backButton = document.getElementById('backButton');
     const logoutButton = document.getElementById('logoutButton');
-    const backButton = document.getElementById('backButton'); // Получаем кнопку "Назад"
 
-    if (editSection.style.display === 'none') {
-        editSection.style.display = 'block';
-        editButton.style.display = 'none'; // Скрываем кнопку редактирования
+    const isEditVisible = editSection.style.display !== 'none';
 
-        backButton.style.display = 'block'; // Показываем кнопку "Назад"
-    } else {
-        editSection.style.display = 'none';
-        editButton.style.display = 'block'; // Показываем кнопку редактирования
-
-        backButton.style.display = 'none'; // Скрываем кнопку "Назад"
-    }
+    editSection.style.display = isEditVisible ? 'none' : 'block';
+    editButton.style.display = isEditVisible ? 'block' : 'none';
+    backButton.style.display = isEditVisible ? 'none' : 'block';
+    logoutButton.style.display = isEditVisible ? 'block' : 'none';
 }
 
 
+// Сохранение данных профиля
 function saveProfileData() {
-    const email = document.getElementById('profileEmail').textContent;
-    const givenName = document.getElementById('profileGivenName').textContent;
-    const familyName = document.getElementById('profileFamilyName').textContent;
-    const city = document.getElementById('city').value;
-    const age = document.getElementById('age').value;
-    const picture = document.getElementById('profilePicture').src;
-
     const profileData = {
-        email,
-        givenName,
-        familyName,
-        city,
-        age,
-        picture,
+        email: document.getElementById('profileEmail').textContent,
+        givenName: document.getElementById('profileGivenName').textContent,
+        familyName: document.getElementById('profileFamilyName').textContent,
+        city: document.getElementById('city').value,
+        age: document.getElementById('age').value,
+        picture: document.getElementById('profilePicture').src
     };
-
-    console.log('Данные для сохранения:', profileData); // Добавлено для отладки
 
     fetch('http://localhost:3000/api/profile', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(profileData),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(profileData)
     })
         .then(response => response.json())
         .then(data => {
-            console.log('Ответ сервера:', data); // Добавлено для отладки
             alert(data.message);
-            toggleEditProfile(); // Скрыть секцию редактирования
+            toggleEditProfile();
         })
-        .catch(error => {
-            console.error('Ошибка сохранения данных профиля:', error);
-            alert('Ошибка сохранения данных профиля.');
-        });
+        .catch(error => console.error('Ошибка сохранения данных профиля:', error));
 }
 
+// Выход из аккаунта
 function handleGoogleLogout() {
     localStorage.removeItem('access_token');
-    sessionStorage.clear();
-    // Скрыть профиль и показать кнопки авторизации
-    document.getElementById('profileContainer').innerHTML = ''; // Очистить контейнер профиля
-    showAuthButtons(); // Показать кнопки авторизации
-    console.log('Вы вышли из аккаунта.');
+    closeModal();
+    document.getElementById('profileContainer').innerHTML = '';
+    toggleProfileContainer(false);
+    showAuthModal();
 }
 
-// Показать профиль
-function showProfile() {
-    document.getElementById('registerButton').style.display = 'none';
-    document.getElementById('logoutButton').style.display = 'block';
-}
-
-// Показать кнопки регистрации и входа
-function showAuthButtons() {
-    document.getElementById('registerButton').style.display = 'block';
-    document.getElementById('logoutButton').style.display = 'none';
-}
-
-// Функция для предпросмотра и загрузки фото
-function previewAndUploadPhoto(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            document.getElementById('profilePicture').src = e.target.result;
-        }
-        reader.readAsDataURL(file);
-    }
-}
-
-// Привязка функции для выхода из аккаунта к кнопке "Выйти"
-document.getElementById('logoutButton').onclick = function () {
-    handleGoogleLogout();
-};
-
-// Привязка функции для регистрации к кнопке "Зарегистрироваться"
-document.getElementById('registerButton').onclick = function () {
-    handleGoogleLogin();
-};
-
-// Запуск авторизации при загрузке страницы
+// Инициализация при загрузке страницы
 window.onload = function () {
     initGoogleAuth();
     handleAuthResult();
