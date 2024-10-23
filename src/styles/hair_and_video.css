@@ -29,10 +29,11 @@ section {
 
 footer {
     text-align: center;
-    padding: 10px 0;
+    padding: 0px 0;
     background-color: #434343;
     color: white;
     position: relative;
+    font-size: 14px;
 }
 
 #about {

@@ -27,6 +27,7 @@ function handleAuthResult() {
             loadProfileData(accessToken);
         }
     } else if (savedToken) {
+        console.log('Используем сохраненный токен:', savedToken);
         loadProfileData(savedToken);
     } else {
         toggleProfileContainer(false);
@@ -36,6 +37,7 @@ function handleAuthResult() {
 
 // Вызов функции при успешной авторизации
 function loadProfileData(token) {
+    console.log('Загружаем данные профиля с токеном:', token);
     fetch('https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=' + token)
         .then(response => {
             if (!response.ok) {
@@ -44,6 +46,7 @@ function loadProfileData(token) {
             return response.json();
         })
         .then(profile => {
+            console.log('Данные профиля:', profile);
             const email = profile.email;
             document.getElementById('profileContainer').innerHTML = `
                 <img id="profilePicture" src="${profile.picture}" alt="Аватар пользователя">
@@ -86,22 +89,48 @@ function loadProfileData(token) {
 
 // Загрузка данных профиля из базы данных
 function loadProfileFromDatabase(email) {
+    console.log('Запрашиваем данные профиля из базы данных для email:', email);
     fetch(`http://localhost:3000/api/profile/${email}`)
-        .then(response => response.json())
-        .then(data => fillProfileData(data))
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Ошибка при получении данных из базы данных');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Данные профиля из базы данных:', data);
+            fillProfileData(data);
+        })
         .catch(error => console.error('Ошибка подгрузки данных профиля из базы данных:', error));
 }
 
 // Заполнение данных профиля
 function fillProfileData(data) {
+    console.log('Заполняем данные профиля:', data);
     document.getElementById('profileEmail').textContent = data.email || '';
-    document.getElementById('profileGivenName').textContent = data.givenName || '';
-    document.getElementById('profileFamilyName').textContent = data.familyName || '';
+    document.getElementById('profileGivenName').textContent = data.first_name || '';
+    document.getElementById('profileFamilyName').textContent = data.surname || '';
     document.getElementById('city').value = data.city || '';
     document.getElementById('age').value = data.age || '';
     document.getElementById('profilePicture').src = data.picture || '';
     toggleProfileContainer(true); // Показываем контейнер профиля после загрузки данных
 }
+
+function previewAndUploadPhoto(event) {
+    const file = event.target.files[0]; // Получаем выбранный файл
+
+    if (file) {
+        const reader = new FileReader(); // Создаем объект FileReader
+
+        reader.onload = function (e) {
+            // Устанавливаем src изображения на загруженный файл
+            document.getElementById('profilePicture').src = e.target.result;
+        };
+
+        reader.readAsDataURL(file); // Читаем файл как Data URL
+    }
+}
+
 
 // Управление видимостью контейнера профиля
 function toggleProfileContainer(show) {
@@ -136,24 +165,29 @@ function toggleEditProfile() {
     logoutButton.style.display = isEditVisible ? 'block' : 'none';
 }
 
-
 // Сохранение данных профиля
 function saveProfileData() {
     const profileData = {
         email: document.getElementById('profileEmail').textContent,
-        givenName: document.getElementById('profileGivenName').textContent,
-        familyName: document.getElementById('profileFamilyName').textContent,
+        first_name: document.getElementById('profileGivenName').textContent,
+        surname: document.getElementById('profileFamilyName').textContent,
         city: document.getElementById('city').value,
         age: document.getElementById('age').value,
         picture: document.getElementById('profilePicture').src
     };
 
+    console.log('Сохраняем данные профиля:', profileData);
     fetch('http://localhost:3000/api/profile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(profileData)
     })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Ошибка при сохранении данных');
+            }
+            return response.json();
+        })
         .then(data => {
             alert(data.message);
             toggleEditProfile();
