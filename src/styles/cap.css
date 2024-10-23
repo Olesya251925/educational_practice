@@ -28,7 +28,6 @@ h1 a {
     color: white;
     text-decoration: none;
     transition: color 0.3s ease, text-shadow 0.3s ease, transform 0.3s ease;
-    /* Плавные переходы */
 }
 
 h1 a:hover {

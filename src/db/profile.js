@@ -65,7 +65,7 @@ function loadProfileData(token) {
                     <div class="profile-buttons">
                         <button id="backButton" onclick="goBack()" style="display: none;">Назад</button>
                         <button id="editButton" onclick="toggleEditProfile()">Редактировать профиль</button>
-                        <button id="logoutButton" onclick="handleGoogleLogout()">Выйти из аккаунта</button>
+                        <button id="logoutButton" onclick="handleGoogleLogout()">Выйти</button>
                     </div>
                 </div>
             `;
