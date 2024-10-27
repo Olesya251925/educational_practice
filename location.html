@@ -31,56 +31,7 @@
     </footer>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script>
-        var map = L.map('map').setView([54.7441, 86.8343], 13);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '© OpenStreetMap'
-        }).addTo(map);
-
-        function getLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showPosition, showError, {
-                    enableHighAccuracy: true
-                });
-            } else {
-                alert("Геолокация не поддерживается этим браузером.");
-            }
-        }
-
-        function showPosition(position) {
-            var lat = position.coords.latitude;
-            var lon = position.coords.longitude;
-
-            console.log("Текущее местоположение:", lat, lon);
-
-            map.setView([lat, lon], 13);
-
-            L.marker([lat, lon]).addTo(map)
-                .bindPopup('Вы находитесь здесь')
-                .openPopup();
-        }
-
-        function showError(error) {
-            switch (error.code) {
-                case error.PERMISSION_DENIED:
-                    alert("Пользователь отклонил запрос на получение местоположения. Пожалуйста, предоставьте доступ к геолокации в настройках браузера.");
-                    break;
-                case error.POSITION_UNAVAILABLE:
-                    alert("Информация о местоположении недоступна. Пожалуйста, проверьте настройки вашего устройства.");
-                    break;
-                case error.TIMEOUT:
-                    alert("Запрос на получение местоположения истек. Пожалуйста, попробуйте еще раз.");
-                    break;
-                case error.UNKNOWN_ERROR:
-                    alert("Произошла неизвестная ошибка. Пожалуйста, попробуйте еще раз.");
-                    break;
-            }
-        }
-
-        getLocation();
-    </script>
+    <script src="src/script/location.js"></script>
 </body>
 
 </html>

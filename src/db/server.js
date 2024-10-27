@@ -18,7 +18,7 @@ app.use(bodyParser.json({ limit: '500mb' }));
 
 // Эндпоинт для сохранения данных профиля
 app.post('/api/profile', async (req, res) => {
-    const { email, first_name, surname, city, age, picture } = req.body; // Изменено здесь
+    const { email, first_name, surname, city, age, picture } = req.body;
 
     try {
         const client = await pool.connect();
@@ -30,14 +30,14 @@ app.post('/api/profile', async (req, res) => {
             // Если аккаунт существует, обновляем его
             await client.query(
                 'UPDATE accounts SET first_name = $1, surname = $2, city = $3, age = $4, picture = $5 WHERE email = $6',
-                [first_name, surname, city, age, picture, email] // Изменено здесь
+                [first_name, surname, city, age, picture, email]
             );
             res.status(200).json({ message: 'Данные профиля обновлены!' });
         } else {
             // Создаем новый аккаунт
             await client.query(
                 'INSERT INTO accounts (email, first_name, surname, city, age, picture) VALUES ($1, $2, $3, $4, $5, $6)',
-                [email, first_name, surname, city, age, picture] // Изменено здесь
+                [email, first_name, surname, city, age, picture]
             );
             res.status(200).json({ message: 'Данные профиля сохранены!' });
         }

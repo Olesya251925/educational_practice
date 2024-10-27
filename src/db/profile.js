@@ -131,7 +131,6 @@ function previewAndUploadPhoto(event) {
     }
 }
 
-
 // Управление видимостью контейнера профиля
 function toggleProfileContainer(show) {
     document.getElementById('profileContainer').classList.toggle('hidden', !show);

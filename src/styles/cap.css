@@ -69,3 +69,30 @@ nav ul li a.active {
     font-weight: bold;
     padding-bottom: 5px;
 }
+
+.contact-info {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 12px;
+    color: white;
+    text-align: right;
+}
+
+.contact-info p {
+    margin: 0;
+}
+
+.contact-info a {
+    color: #FFD700;
+    text-decoration: none;
+}
+
+.contact-info a:hover {
+    text-decoration: underline;
+}
+
+header {
+    position: relative;
+    padding-top: 50px;
+}
