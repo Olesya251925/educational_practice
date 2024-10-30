@@ -1,0 +1,96 @@
+main {
+    padding: 20px;
+    text-align: center;
+}
+
+main .product-category {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+main .product-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    /* Изменено с center на flex-start */
+}
+
+main .product-container .product-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    margin: 10px;
+    width: 200px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+main .product-container .product-card h3 {
+    font-size: 18px;
+    margin: 0;
+    color: #333;
+}
+
+main .product-container .product-card p {
+    font-size: 14px;
+    color: #555;
+}
+
+footer {
+    text-align: center;
+    padding: 10px 0;
+    background-color: #434343;
+    color: white;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    position: fixed;
+}
+
+footer p {
+    margin: 0;
+}
+
+.product-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.product-details h3 {
+    margin: 0;
+}
+
+.product-details button {
+    align-self: flex-end;
+    margin-bottom: 10px;
+    background-color: #8A53FF;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.product-details button:hover {
+    background-color: #6e3ba0;
+}
+
+.product-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.close-button {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.close-button:hover {
+    transform: scale(1.02);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
