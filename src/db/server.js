@@ -81,40 +81,6 @@ app.get('/api/clean_products', async (req, res) => {
     }
 });
 
-// Эндпоинт для получения изображения по URL
-app.get('/image/:url', async (req, res) => {
-    const imageUrl = req.params.url;
-
-    // Отправляем HTML с изображением
-    res.send(`
-        <!DOCTYPE html>
-        <html lang="ru">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Изображение</title>
-            <style>
-                body {
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    height: 100vh;
-                    background-color: #f5f5f5;
-                }
-                img {
-                    max-width: 100%;
-                    height: auto;
-                }
-            </style>
-        </head>
-        <body>
-            <img src="${imageUrl}" alt="Продукт" />
-            <p><a href="/">Вернуться на главную страницу</a></p>
-        </body>
-        </html>
-    `);
-});
-
 
 // Запуск сервера
 const PORT = 3000;

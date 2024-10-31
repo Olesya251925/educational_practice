@@ -75,11 +75,11 @@ function showProductDetails(product) {
     const detailsContainer = document.createElement('div');
     detailsContainer.className = 'product-details';
     detailsContainer.style.position = 'fixed';
-    detailsContainer.style.top = '145px';
+    detailsContainer.style.top = '130px';
     detailsContainer.style.right = '0';
-    detailsContainer.style.bottom = '20px';
-    detailsContainer.style.height = 'calc(100vh - 165px)';
     detailsContainer.style.width = '350px';
+    detailsContainer.style.height = 'auto';
+    detailsContainer.style.maxHeight = 'calc(100vh - 165px)';
     detailsContainer.style.backgroundColor = '#fff';
     detailsContainer.style.padding = '20px';
     detailsContainer.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.3)';
