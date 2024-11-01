@@ -1,22 +1,27 @@
+body {
+    margin: 0;
+    overflow-x: hidden;
+}
+
 main {
     padding: 20px;
     text-align: center;
 }
 
-main .product-category {
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: #333;
+.category-container {
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 5px;
 }
 
-main .product-container {
+.product-list {
     display: flex;
+    overflow-x: auto;
+    padding: 10px 0;
     flex-wrap: wrap;
-    justify-content: flex-start;
-    /* Изменено с center на flex-start */
 }
 
-main .product-container .product-card {
+.product-card {
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 5px;
@@ -24,17 +29,31 @@ main .product-container .product-card {
     margin: 10px;
     width: 200px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    flex: 0 1 auto;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-main .product-container .product-card h3 {
-    font-size: 18px;
-    margin: 0;
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 500px) {
+    .product-card {
+        width: 100%;
+        margin: 10px 0;
+    }
+
+    .product-list {
+        flex-direction: column;
+    }
+}
+
+main .product-category {
+    font-size: 24px;
+    margin-bottom: 20px;
     color: #333;
-}
-
-main .product-container .product-card p {
-    font-size: 14px;
-    color: #555;
+    text-align: center;
 }
 
 footer {
@@ -54,43 +73,45 @@ footer p {
 }
 
 .product-details {
-    display: flex;
-    flex-direction: column;
+    position: fixed;
+    top: 130px;
+    right: 20px;
+    width: 350px;
+    max-height: calc(100vh - 100px);
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    z-index: 1000;
+    overflow-y: auto;
+    transition: transform 0.3s ease-in-out;
+    transform: translateX(100%);
 }
 
 .product-details h3 {
-    margin: 0;
+    margin: 20px 0 10px 0;
+    color: #333;
 }
 
-.product-details button {
-    align-self: flex-end;
-    margin-bottom: 10px;
-    background-color: #8A53FF;
-    color: #fff;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-.product-details button:hover {
-    background-color: #6e3ba0;
-}
-
-.product-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+.product-details p {
+    margin: 5px 0;
 }
 
 .close-button {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    width: 30px;
+    position: absolute;
+    top: 15px;
+    right: 20px;
 }
 
-.close-button:hover {
-    transform: scale(1.02);
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+.selected-product {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 24px;
+    text-align: left;
 }

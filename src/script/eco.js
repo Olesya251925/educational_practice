@@ -1,4 +1,6 @@
 let currentProduct = null; // Переменная для отслеживания открытого продукта
+let currentProductCard = null; // Переменная для отслеживания открытой карточки
+let detailsContainer = null; // Переменная для хранения контейнера деталей продукта
 
 document.addEventListener("DOMContentLoaded", async () => {
     const productContainer = document.getElementById("product-container");
@@ -19,47 +21,91 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
         }
 
+        // Группировка продуктов по категориям
+        const categories = {
+            shampoos: [],
+            conditioners: [],
+            oils: []
+        };
+
         products.forEach(product => {
-            const productCard = document.createElement('div');
-            productCard.className = 'product-card';
-            productCard.style.cursor = 'pointer'; // Указатель на то, что карточка кликабельная
-
-            // Создаем элемент изображения
-            const productImage = document.createElement('img');
-            productImage.src = product.image_url || 'default-image.jpg';
-            productImage.style.width = '100%';
-            productCard.appendChild(productImage);
-
-            // Создаем заголовок с именем продукта
-            const productTitle = document.createElement('h3');
-            productTitle.textContent = product.name || 'Без названия';
-            productCard.appendChild(productTitle);
-
-            // Добавляем обработчик событий для нажатия на карточку
-            productCard.addEventListener('click', () => {
-                // Проверяем, открыт ли уже текущий продукт
-                if (currentProduct === product) {
-                    return; // Если открыт, ничего не делаем
-                }
-                // Если другой продукт открыт, закрываем его
-                if (currentProduct) {
-                    closeProductDetails(); // Закрываем текущее окно перед открытием нового
-                }
-                showProductDetails(product);
-            });
-
-            // Добавляем анимацию наведения
-            productCard.addEventListener('mouseenter', () => {
-                productCard.classList.add('hover');
-            });
-
-            productCard.addEventListener('mouseleave', () => {
-                productCard.classList.remove('hover');
-            });
-
-            // Добавление карточки продукта в контейнер
-            productContainer.appendChild(productCard);
+            switch (product.category) {
+                case "Шампунь":
+                    categories.shampoos.push(product);
+                    break;
+                case "Кондиционер":
+                    categories.conditioners.push(product);
+                    break;
+                case "Масло":
+                    categories.oils.push(product);
+                    break;
+            }
         });
+
+
+        // Отображение продуктов для каждой категории
+        for (const [categoryName, categoryProducts] of Object.entries(categories)) {
+            if (categoryProducts.length > 0) {
+                // Создаем контейнер для категории
+                const categoryContainer = document.createElement('div');
+                categoryContainer.className = 'category-container';
+
+                // Создаем заголовок категории на русском языке
+                const categoryHeader = document.createElement('h2');
+                switch (categoryName) {
+                    case 'shampoos':
+                        categoryHeader.textContent = 'Шампуни';
+                        break;
+                    case 'conditioners':
+                        categoryHeader.textContent = 'Кондиционеры';
+                        break;
+                    case 'oils':
+                        categoryHeader.textContent = 'Масла';
+                        break;
+                }
+                categoryContainer.appendChild(categoryHeader);
+
+                // Создаем контейнер для продуктов
+                const productList = document.createElement('div');
+                productList.className = 'product-list';
+
+                categoryProducts.forEach(product => {
+                    const productCard = document.createElement('div');
+                    productCard.className = 'product-card';
+                    productCard.style.cursor = 'pointer';
+                    productCard.style.marginRight = '10px';
+
+                    // Создаем элемент изображения
+                    const productImage = document.createElement('img');
+                    productImage.src = product.image_url || 'default-image.jpg';
+                    productImage.style.width = '100%';
+                    productCard.appendChild(productImage);
+
+                    // Создаем заголовок с именем продукта
+                    const productTitle = document.createElement('h3');
+                    productTitle.textContent = product.name || 'Без названия';
+                    productCard.appendChild(productTitle);
+
+                    // Добавляем обработчик событий для нажатия на карточку
+                    productCard.addEventListener('click', () => {
+                        if (currentProduct === product) {
+                            return; // Если открыт, ничего не делаем
+                        }
+                        if (currentProduct) {
+                            closeProductDetails(); // Закрываем текущее окно перед открытием нового
+                        }
+                        showProductDetails(product, productCard); // Передаем также карточку
+                    });
+
+                    // Добавление карточки продукта в список
+                    productList.appendChild(productCard);
+                });
+
+                // Добавление списка продуктов в контейнер категории
+                categoryContainer.appendChild(productList);
+                productContainer.appendChild(categoryContainer);
+            }
+        }
 
     } catch (error) {
         console.error('Ошибка при загрузке продуктов:', error);
@@ -69,17 +115,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
-function showProductDetails(product) {
+function showProductDetails(product, productCard) {
     currentProduct = product;
+    currentProductCard = productCard; // Сохраняем текущую карточку
 
-    const detailsContainer = document.createElement('div');
+    // Добавляем эффект тени к карточке
+    currentProductCard.classList.add('selected-product');
+
+    detailsContainer = document.createElement('div');
     detailsContainer.className = 'product-details';
     detailsContainer.style.position = 'fixed';
-    detailsContainer.style.top = '130px';
-    detailsContainer.style.right = '0';
+    detailsContainer.style.top = '130px'; // Начальное положение
+    detailsContainer.style.right = '20px';
     detailsContainer.style.width = '350px';
-    detailsContainer.style.height = 'auto';
-    detailsContainer.style.maxHeight = 'calc(100vh - 165px)';
+    detailsContainer.style.maxHeight = 'calc(100vh - 100px)';
     detailsContainer.style.backgroundColor = '#fff';
     detailsContainer.style.padding = '20px';
     detailsContainer.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.3)';
@@ -88,7 +137,6 @@ function showProductDetails(product) {
     detailsContainer.style.overflowY = 'auto';
     detailsContainer.style.transition = 'transform 0.3s ease-in-out';
     detailsContainer.style.transform = 'translateX(100%)';
-
 
     setTimeout(() => {
         detailsContainer.style.transform = 'translateX(0)';
@@ -108,27 +156,39 @@ function showProductDetails(product) {
 
     closeImage.onclick = (event) => {
         event.stopPropagation();
-        closeProductDetails(); // Закрываем окно через функцию
+        closeProductDetails();
     };
 
     detailsContainer.appendChild(closeImage);
     detailsContainer.innerHTML += `
-        <h3 style="margin: 35px 0 10px 0; color: #333;">${product.name}</h3> 
+        <h3 style="margin: 20px 0 10px 0; color: #333;">${product.name}</h3> 
         <p style="margin: 5px 0;"><strong>Цена:</strong> ${product.price} руб.</p>
         <p style="margin: 5px 0;"><strong>Объем:</strong> ${product.volume} мл</p>
         <p style="margin: 5px 0;"><strong>Описание:</strong> ${product.description}</p>
         <p style="margin: 5px 0;"><strong>Состав:</strong> ${product.composition}</p>
+        <p style="margin: 5px 0;"><strong>Применение:</strong> ${product.usage || 'Информация отсутствует'}</p>
     `;
 
     detailsContainer.onclick = (event) => {
-        closeProductDetails(); // Закрываем при клике на область
+        closeProductDetails();
     };
+
+    // Добавляем обработчик прокрутки
+    window.addEventListener('scroll', onScroll);
 }
 
 function closeProductDetails() {
-    const detailsContainer = document.querySelector('.product-details');
     if (detailsContainer) {
         detailsContainer.remove();
+        currentProductCard.classList.remove('selected-product'); // Убираем эффект тени с карточки
         currentProduct = null; // Сбрасываем текущий продукт после закрытия
+        currentProductCard = null; // Сбрасываем текущую карточку
+        window.removeEventListener('scroll', onScroll); // Удаляем обработчик прокрутки
     }
+}
+
+function onScroll() {
+    const scrollY = window.scrollY; // Получаем текущую позицию прокрутки
+    const newTop = Math.max(130 - scrollY, 20); // Изменяем позицию в зависимости от прокрутки, ограничиваем до 20px
+    detailsContainer.style.top = newTop + 'px'; // Устанавливаем новое значение top
 }
