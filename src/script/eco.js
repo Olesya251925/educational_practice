@@ -4,32 +4,60 @@ let detailsContainer = null; // Переменная для хранения к�
 
 document.addEventListener("DOMContentLoaded", async () => {
     const productContainer = document.getElementById("product-container");
+    const categoryTitle = document.getElementById("category-title");
+    const hairProductsBtn = document.getElementById("hair-products-btn");
+    const faceProductsBtn = document.getElementById("face-products-btn");
+
+    // Загрузка продуктов по умолчанию
+    await loadProducts('hair');
+
+    // Обработчик для кнопки "Средства для волос"
+    hairProductsBtn.addEventListener("click", async () => {
+        categoryTitle.textContent = "Средства для волос"; // Изменяем заголовок
+        await loadProducts('hair'); // Загружаем продукты для волос
+        setActiveButton(hairProductsBtn, faceProductsBtn); // Устанавливаем активную кнопку
+    });
+
+    // Обработчик для кнопки "Средства для лица"
+    faceProductsBtn.addEventListener("click", async () => {
+        categoryTitle.textContent = "Средства для лица"; // Изменяем заголовок
+        await loadProducts('face'); // Загружаем продукты для лица
+        setActiveButton(faceProductsBtn, hairProductsBtn); // Устанавливаем активную кнопку
+    });
+});
+
+// Функция для загрузки продуктов
+async function loadProducts(category) {
+    const productContainer = document.getElementById("product-container");
+    productContainer.innerHTML = ''; // Очищаем контейнер перед загрузкой новых продуктов
 
     try {
         const response = await fetch('http://localhost:3000/api/clean_products');
-
         if (!response.ok) {
             throw new Error(`Ошибка HTTP: ${response.status}`);
         }
 
         const products = await response.json();
+        const filteredProducts = products.filter(product => {
+            if (category === 'hair') {
+                return product.category === 'Шампунь' || product.category === 'Кондиционер' || product.category === 'Масло' || product.category === 'Маска';
+            } else {
+                return product.category === 'Крем' || product.category === 'Сыворотка' || product.category === 'Гель';
+            }
+        });
 
-        if (products.length === 0) {
-            const noProductsMessage = document.createElement('p');
-            noProductsMessage.textContent = 'Нет доступных продуктов.';
-            productContainer.appendChild(noProductsMessage);
-            return;
-        }
-
-        // Группировка продуктов по категориям
+        // Группировка и отображение продуктов
         const categories = {
             shampoos: [],
             conditioners: [],
             oils: [],
-            masks: [] // Добавлена новая категория "Маски"
+            masks: [],
+            creams: [],  // Для средств для лица
+            serums: [],
+            gels: []
         };
 
-        products.forEach(product => {
+        filteredProducts.forEach(product => {
             switch (product.category) {
                 case "Шампунь":
                     categories.shampoos.push(product);
@@ -40,8 +68,17 @@ document.addEventListener("DOMContentLoaded", async () => {
                 case "Масло":
                     categories.oils.push(product);
                     break;
-                case "Маска": // Добавлен новый случай для категории "Маска"
+                case "Маска":
                     categories.masks.push(product);
+                    break;
+                case "Крем": // Новая категория для кремов
+                    categories.creams.push(product);
+                    break;
+                case "Сыворотка": // Новая категория для сывороток
+                    categories.serums.push(product);
+                    break;
+                case "Гель": // Новая категория для гелей
+                    categories.gels.push(product);
                     break;
             }
         });
@@ -53,22 +90,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const categoryContainer = document.createElement('div');
                 categoryContainer.className = 'category-container';
 
-                // Создаем заголовок категории на русском языке
+                // Создаем заголовок категории
                 const categoryHeader = document.createElement('h2');
-                switch (categoryName) {
-                    case 'shampoos':
-                        categoryHeader.textContent = 'Шампуни';
-                        break;
-                    case 'conditioners':
-                        categoryHeader.textContent = 'Кондиционеры';
-                        break;
-                    case 'oils':
-                        categoryHeader.textContent = 'Масла';
-                        break;
-                    case 'masks': // Добавлен новый случай для заголовка категории "Маски"
-                        categoryHeader.textContent = 'Маски';
-                        break;
-                }
+                categoryHeader.textContent = getCategoryHeader(categoryName);
                 categoryContainer.appendChild(categoryHeader);
 
                 // Создаем контейнер для продуктов
@@ -113,14 +137,42 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
         }
 
-
     } catch (error) {
         console.error('Ошибка при загрузке продуктов:', error);
         const errorMessage = document.createElement('p');
         errorMessage.textContent = 'Произошла ошибка при загрузке продуктов. Попробуйте позже.';
         productContainer.appendChild(errorMessage);
     }
-});
+}
+
+// Функция для установки активной кнопки
+function setActiveButton(activeBtn, inactiveBtn) {
+    activeBtn.classList.add('active');
+    inactiveBtn.classList.remove('active');
+}
+
+// Функция для получения заголовка категории
+function getCategoryHeader(categoryName) {
+    switch (categoryName) {
+        case 'shampoos':
+            return 'Шампуни';
+        case 'conditioners':
+            return 'Кондиционеры';
+        case 'oils':
+            return 'Масла';
+        case 'masks':
+            return 'Маски';
+        case 'creams':
+            return 'Крема';
+        case 'serums':
+            return 'Сыворотки';
+        case 'gels':
+            return 'Гель/пенка';
+        default:
+            return '';
+    }
+}
+
 
 function showProductDetails(product, productCard) {
     currentProduct = product;
