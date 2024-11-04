@@ -25,7 +25,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         const categories = {
             shampoos: [],
             conditioners: [],
-            oils: []
+            oils: [],
+            masks: [] // Добавлена новая категория "Маски"
         };
 
         products.forEach(product => {
@@ -39,9 +40,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                 case "Масло":
                     categories.oils.push(product);
                     break;
+                case "Маска": // Добавлен новый случай для категории "Маска"
+                    categories.masks.push(product);
+                    break;
             }
         });
-
 
         // Отображение продуктов для каждой категории
         for (const [categoryName, categoryProducts] of Object.entries(categories)) {
@@ -61,6 +64,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                         break;
                     case 'oils':
                         categoryHeader.textContent = 'Масла';
+                        break;
+                    case 'masks': // Добавлен новый случай для заголовка категории "Маски"
+                        categoryHeader.textContent = 'Маски';
                         break;
                 }
                 categoryContainer.appendChild(categoryHeader);
@@ -106,6 +112,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 productContainer.appendChild(categoryContainer);
             }
         }
+
 
     } catch (error) {
         console.error('Ошибка при загрузке продуктов:', error);

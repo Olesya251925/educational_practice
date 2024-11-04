@@ -20,7 +20,7 @@ var salons = [
         phone: "+7 (904) 123-4567",
         photo: "src/photo/salon2.png",
         address: "Красная улица, 13",
-        description: "Лучший салон для волос и ногтей."
+        description: "Лучший салон для волос и лица."
     },
     {
         name: "Glow and Shine",
