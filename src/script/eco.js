@@ -42,7 +42,7 @@ async function loadProducts(category) {
             if (category === 'hair') {
                 return product.category === 'Шампунь' || product.category === 'Кондиционер' || product.category === 'Масло' || product.category === 'Маска';
             } else {
-                return product.category === 'Крем' || product.category === 'Сыворотка' || product.category === 'Гель';
+                return product.category === 'Крем' || product.category === 'Сыворотка' || product.category === 'Гель' || product.category === 'Маска2';
             }
         });
 
@@ -54,7 +54,8 @@ async function loadProducts(category) {
             masks: [],
             creams: [],  // Для средств для лица
             serums: [],
-            gels: []
+            gels: [],
+            face_mask: []
         };
 
         filteredProducts.forEach(product => {
@@ -79,6 +80,9 @@ async function loadProducts(category) {
                     break;
                 case "Гель": // Новая категория для гелей
                     categories.gels.push(product);
+                    break;
+                case "Маска2": // Новая категория для гелей
+                    categories.face_mask.push(product);
                     break;
             }
         });
@@ -168,6 +172,8 @@ function getCategoryHeader(categoryName) {
             return 'Сыворотки';
         case 'gels':
             return 'Гель/пенка';
+        case 'face_mask':
+            return 'Маски';
         default:
             return '';
     }
