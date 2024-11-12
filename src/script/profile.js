@@ -25,13 +25,32 @@ function handleAuthResult() {
         if (accessToken) {
             localStorage.setItem('access_token', accessToken);
             loadProfileData(accessToken);
+            showTrackingForms(); // Показываем формы после успешной авторизации
         }
     } else if (savedToken) {
         console.log('Используем сохраненный токен:', savedToken);
         loadProfileData(savedToken);
+        showTrackingForms(); // Показываем формы после успешной авторизации
     } else {
         toggleProfileContainer(false);
         showAuthModal();
+        hideTrackingForms(); // Скрываем формы, если пользователь не авторизован
+    }
+}
+
+// Функция для показа форм
+function showTrackingForms() {
+    const trackingFormsContainer = document.querySelector('.tracking-forms');
+    if (trackingFormsContainer) {
+        trackingFormsContainer.classList.remove('hidden'); // Убираем класс, который скрывает формы
+    }
+}
+
+// Функция для скрытия форм
+function hideTrackingForms() {
+    const trackingFormsContainer = document.querySelector('.tracking-forms');
+    if (trackingFormsContainer) {
+        trackingFormsContainer.classList.add('hidden'); // Добавляем класс, который скрывает формы
     }
 }
 
@@ -197,6 +216,7 @@ function saveProfileData() {
 // Выход из аккаунта
 function handleGoogleLogout() {
     localStorage.removeItem('access_token');
+    hideTrackingForms();
     closeModal();
     document.getElementById('profileContainer').innerHTML = '';
     toggleProfileContainer(false);
@@ -208,3 +228,4 @@ window.onload = function () {
     initGoogleAuth();
     handleAuthResult();
 };
+
