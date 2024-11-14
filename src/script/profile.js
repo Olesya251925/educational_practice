@@ -28,7 +28,6 @@ function handleAuthResult() {
             showTrackingForms(); // Показываем формы после успешной авторизации
         }
     } else if (savedToken) {
-        console.log('Используем сохраненный токен:', savedToken);
         loadProfileData(savedToken);
         showTrackingForms(); // Показываем формы после успешной авторизации
     } else {
@@ -56,7 +55,6 @@ function hideTrackingForms() {
 
 // Вызов функции при успешной авторизации
 function loadProfileData(token) {
-    console.log('Загружаем данные профиля с токеном:', token);
     fetch('https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=' + token)
         .then(response => {
             if (!response.ok) {
@@ -117,7 +115,6 @@ function loadProfileFromDatabase(email) {
             return response.json();
         })
         .then(data => {
-            console.log('Данные профиля из базы данных:', data);
             fillProfileData(data);
         })
         .catch(error => console.error('Ошибка подгрузки данных профиля из базы данных:', error));
@@ -125,7 +122,6 @@ function loadProfileFromDatabase(email) {
 
 // Заполнение данных профиля
 function fillProfileData(data) {
-    console.log('Заполняем данные профиля:', data);
     document.getElementById('profileEmail').textContent = data.email || '';
     document.getElementById('profileGivenName').textContent = data.first_name || '';
     document.getElementById('profileFamilyName').textContent = data.surname || '';

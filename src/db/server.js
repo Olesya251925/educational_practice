@@ -81,6 +81,68 @@ app.get('/api/clean_products', async (req, res) => {
     }
 });
 
+// Эндпоинт для сохранения данных профиля волос
+app.post('/api/save-hair-profile', async (req, res) => {
+    const { email, hairCondition, hairType, hairPorosity, usesHeatProtection, hairWashFrequency, hairPhoto } = req.body;
+
+    try {
+        const client = await pool.connect(); // Подключаемся к базе данных
+
+        // Проверим, если данные корректны (например, проверка наличия email)
+        if (!email) {
+            return res.status(400).json({ message: 'Email обязателен' });
+        }
+
+        // SQL-запрос для вставки данных в таблицу hair_profile
+        const query = `
+            INSERT INTO hair_profile (email, hair_condition, hair_type, hair_porosity, uses_heat_protection, hair_wash_frequency, hair_photo)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
+        `;
+
+        const values = [email, hairCondition, hairType, hairPorosity, usesHeatProtection, hairWashFrequency, hairPhoto];
+
+        // Выполняем запрос
+        await client.query(query, values);
+        client.release(); // Освобождаем соединение с базой данных
+
+        res.status(200).json({ message: 'Данные успешно сохранены' }); // Ответ от сервера
+    } catch (error) {
+        console.error('Ошибка при сохранении данных в базу:', error);
+        res.status(500).json({ message: 'Ошибка при сохранении данных' });
+    }
+});
+
+// Эндпоинт для сохранения данных профиля кожи
+app.post('/api/save-skin-profile', async (req, res) => {
+    const { email, skinCondition, skinHydration, hasRashes, wearsMakeup, usesSunscreen, facePhoto } = req.body;
+
+    try {
+        const client = await pool.connect(); // Подключаемся к базе данных
+
+        // Проверим, если данные корректны (например, проверка наличия email)
+        if (!email) {
+            return res.status(400).json({ message: 'Email обязателен' });
+        }
+
+        // SQL-запрос для вставки данных в таблицу face_profile
+        const query = `
+            INSERT INTO face_profile (email, skin_condition, skin_hydration, has_rashes, wears_makeup, uses_sunscreen, face_photo)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
+        `;
+
+        const values = [email, skinCondition, skinHydration, hasRashes, wearsMakeup, usesSunscreen, facePhoto];
+
+        // Выполняем запрос
+        await client.query(query, values);
+        client.release(); // Освобождаем соединение с базой данных
+
+        res.status(200).json({ message: 'Данные успешно сохранены' }); // Ответ от сервера
+    } catch (error) {
+        console.error('Ошибка при сохранении данных в базу:', error);
+        res.status(500).json({ message: 'Ошибка при сохранении данных' });
+    }
+});
+
 
 // Запуск сервера
 const PORT = 3000;
