@@ -41,6 +41,9 @@ function saveHairData(event) {
     const hairPorosityElement = document.getElementById('hairPorosity');
     const scalpConditionElement = document.getElementById('scalpCondition');
     const hairWashFrequencyElement = document.getElementById('hairWashFrequency');
+    const splitEndsElement = document.getElementById('splitEnds');
+    const coloredHairElement = document.getElementById('coloredHair');
+    const hairLossElement = document.getElementById('hairLoss');
     const hairPhotoDataUrl = document.getElementById('hairPhotoDataUrl').value;
 
     resetErrors();
@@ -78,6 +81,21 @@ function saveHairData(event) {
         hasError = true;
     }
 
+    if (!splitEndsElement || !splitEndsElement.value) {
+        showError(splitEndsElement);
+        hasError = true;
+    }
+
+    if (!coloredHairElement || !coloredHairElement.value) {
+        showError(coloredHairElement);
+        hasError = true;
+    }
+
+    if (!hairLossElement || !hairLossElement.value) {
+        showError(hairLossElement);
+        hasError = true;
+    }
+
     if (hasError) {
         return;
     }
@@ -89,6 +107,9 @@ function saveHairData(event) {
         hairPorosity: hairPorosityElement.value,
         usesHeatProtection: scalpConditionElement.value,
         hairWashFrequency: hairWashFrequencyElement.value,
+        splitEnds: splitEndsElement.value,
+        coloredHair: coloredHairElement.value,
+        hairLoss: hairLossElement.value,
         hairPhoto: hairPhotoDataUrl
     };
 
@@ -110,6 +131,7 @@ function saveHairData(event) {
 
     removePhotoPreview('hairPhotoPreview');
 }
+
 
 // Функция для загрузки данных о волосах
 function loadHairData() {

@@ -161,8 +161,10 @@ function closeModal() {
 }
 
 function goBack() {
-    window.location.href = 'profile.html'; // Перенаправляем на страницу профиля
+    history.pushState(null, null, 'profile.html');
+    loadProfileData(localStorage.getItem('access_token'));
 }
+
 
 // Переключение режима редактирования профиля
 function toggleEditProfile() {

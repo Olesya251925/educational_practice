@@ -56,6 +56,27 @@ function generateTrackingForms() {
         </select>
     </div>
 
+     <label for="splitEnds" class="form-label">У вас сильно секутся кончики?</label>
+    <select id="splitEnds" name="splitEnds" class="form-select">
+        <option disabled selected></option>
+        <option value="Да">Да</option>
+        <option value="Нет">Нет</option>
+    </select>
+
+    <label for="coloredHair" class="form-label">У вас окрашенные волосы?</label>
+    <select id="coloredHair" name="coloredHair" class="form-select">
+        <option disabled selected></option>
+        <option value="Да">Да</option>
+        <option value="Нет">Нет</option>
+    </select>
+
+    <label for="hairLoss" class="form-label">Сильно ли у вас выпадают волосы?</label>
+    <select id="hairLoss" name="hairLoss" class="form-select">
+        <option disabled selected></option>
+        <option value="Да">Да</option>
+        <option value="Нет">Нет</option>
+    </select>
+
     <label for="hairPhoto" class="form-label">Загрузите фото ваших волос:</label>
     <input id="hairPhoto" name="hairPhoto" type="file" accept="image/*" class="form-input" onchange="handleHairPhotoUpload(event)">
     <input type="hidden" id="hairPhotoDataUrl" name="hairPhotoDataUrl">
@@ -109,7 +130,7 @@ function generateTrackingForms() {
             <option value="Нет">Нет</option>
         </select>
 
-         <label for="usesSunscreen" class="form-label">Используете ли вы солнцезащитные средства?</label>
+         <label for="usesSunscreen" class="form-label">Имеются морщины?</label>
         <select id="usesSunscreen" name="usesSunscreen" required class="form-select">
             <option disabled selected></option>
             <option value="Да">Да</option>
@@ -242,13 +263,18 @@ async function toggleHistory() {
 
                     // Оформление данных
                     listItem.innerHTML = `
-                        <p><strong>Тип волос:</strong> ${record.hair_type}</p>
-                        <p><strong>Пористость:</strong> ${record.hair_porosity}</p>
-                        <p><strong>Термозащита:</strong> ${record.uses_heat_protection}</p>
-                        <p><strong>Частота мытья:</strong> ${record.hair_wash_frequency}</p>
-                        <p><strong>Фото волос:</strong> <img src="${record.hair_photo}" alt="Фото волос" style="max-width: 200px; height: auto;" /></p>
-                    `;
+    <p><strong>Тип волос:</strong> ${record.hair_type}</p>
+    <p><strong>Пористость:</strong> ${record.hair_porosity}</p>
+    <p><strong>Термозащита:</strong> ${record.uses_heat_protection}</p>
+    <p><strong>Частота мытья:</strong> ${record.hair_wash_frequency}</p>
+    <p><strong>Секущиеся кончики:</strong> ${record.split_ends}</p>
+    <p><strong>Окрашенные волосы:</strong> ${record.colored_hair}</p>
+    <p><strong>Выпадение волос:</strong> ${record.hair_loss}</p>
+    <p><strong>Фото волос:</strong> <img src="${record.hair_photo}" alt="Фото волос" style="max-width: 200px; height: auto;" /></p>
+`;
+
                     hairHistoryList.appendChild(listItem);
+
                 });
             } else {
                 hairHistoryList.innerHTML = '<li>История пуста.</li>';
@@ -263,7 +289,7 @@ async function toggleHistory() {
     }
 }
 
-// История для волос
+// История для лица
 async function toggleSkinHistory() {
     const skinHistoruButton = document.querySelector('.skin-historu-button');
     const SkinHistoryTitle = document.getElementById('skinHistoryTitle');
