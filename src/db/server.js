@@ -83,7 +83,18 @@ app.get('/api/clean_products', async (req, res) => {
 
 // Эндпоинт для сохранения данных профиля волос
 app.post('/api/save-hair-profile', async (req, res) => {
-    const { email, hairCondition, hairType, hairPorosity, usesHeatProtection, hairWashFrequency, hairPhoto } = req.body;
+    const {
+        email,
+        hairCondition,
+        hairType,
+        hairPorosity,
+        usesHeatProtection,
+        hairWashFrequency,
+        hairPhoto,
+        splitEnds,
+        coloredHair,
+        hairLoss
+    } = req.body;
 
     try {
         const client = await pool.connect(); // Подключаемся к базе данных
@@ -95,11 +106,22 @@ app.post('/api/save-hair-profile', async (req, res) => {
 
         // SQL-запрос для вставки данных в таблицу hair_profile
         const query = `
-            INSERT INTO hair_profile (email, hair_condition, hair_type, hair_porosity, uses_heat_protection, hair_wash_frequency, hair_photo)
-            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            INSERT INTO hair_profile (email, hair_condition, hair_type, hair_porosity, uses_heat_protection, hair_wash_frequency, hair_photo, split_ends, colored_hair, hair_loss)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
         `;
 
-        const values = [email, hairCondition, hairType, hairPorosity, usesHeatProtection, hairWashFrequency, hairPhoto];
+        const values = [
+            email,
+            hairCondition,
+            hairType,
+            hairPorosity,
+            usesHeatProtection,
+            hairWashFrequency,
+            hairPhoto,
+            splitEnds,
+            coloredHair,
+            hairLoss
+        ];
 
         // Выполняем запрос
         await client.query(query, values);
@@ -111,6 +133,7 @@ app.post('/api/save-hair-profile', async (req, res) => {
         res.status(500).json({ message: 'Ошибка при сохранении данных' });
     }
 });
+
 
 // Эндпоинт для сохранения данных профиля кожи
 app.post('/api/save-skin-profile', async (req, res) => {
