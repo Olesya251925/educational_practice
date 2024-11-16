@@ -135,7 +135,6 @@ function generateTrackingForms() {
             <option disabled selected></option>
             <option value="Да">Да</option>
             <option value="Нет">Нет</option>
-            <option value="Только летом">Только летом</option>
         </select>
 
         <label for="facePhoto" class="form-label">Загрузите фото вашего лица:</label>
