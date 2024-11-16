@@ -87,19 +87,20 @@ function saveHairData(event) {
         },
         body: JSON.stringify(hairData), // Преобразуем объект в JSON
     })
-        .then(response => response.json())
+        .then(response => {
+            console.log('Ответ от сервера:', response); // Логируем ответ от сервера
+            return response.json(); // Преобразуем в JSON, чтобы получить данные
+        })
         .then(data => {
-            console.log('Ответ от сервера:', data);
-            // Выводим сообщение о том, что данные были успешно сохранены
+            console.log('Полученные данные от сервера:', data);
             alert('Данные успешно сохранены!');
-
-            // Очищаем все поля формы после успешной отправки данных
             clearForm();
         })
         .catch(error => {
             console.error('Ошибка при отправке данных:', error);
             alert('Ошибка при сохранении данных.');
         });
+
 }
 
 function showError(inputElement) {

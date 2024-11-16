@@ -87,3 +87,27 @@ form select:focus {
     margin-top: 5px;
     text-align: left;
 }
+
+form button.history-button {
+    background-color: #FFA500;
+}
+
+form button.history-button:hover {
+    background-color: #FF8C00;
+}
+
+.history-button {
+    margin-top: 15px;
+}
+
+form button.skin-history-button {
+    background-color: #FFA500;
+}
+
+form button.skin-history-button:hover {
+    background-color: #FF8C00;
+}
+
+.skin-history-button {
+    margin-top: 15px;
+}
