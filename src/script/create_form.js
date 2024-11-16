@@ -64,7 +64,7 @@ function generateTrackingForms() {
     <!-- История состояния волос перед кнопкой -->
     <div id="hairHistoryTitle" style="display: none;">
         <h4>История состояния волос:</h4>
-           <ul id="hairHistoryList"></ul> 
+           <ul id="hairHistoryList" style="margin: 0; padding: 0;"></ul> 
     </div>
 
     <!-- Кнопка История -->
@@ -171,17 +171,31 @@ function observeProfileContainer() {
     observer.observe(document.body, { childList: true, subtree: true });
 }
 
+// Функция для получения email из элемента на странице
+function getEmailFromProfile() {
+    const emailElement = document.getElementById('profileEmail');
+    if (emailElement) {
+        const email = emailElement.textContent.trim();
+        return email;
+    }
+    return null;
+}
 
 
-
-
-
-
-// Функция для переключения между состояниями кнопки "История" и отображением истории для волос
 async function toggleHistory() {
     const historyButton = document.querySelector('.history-button');
     const historyTitle = document.getElementById('hairHistoryTitle');
     const hairHistoryList = document.getElementById('hairHistoryList');
+
+    // Получаем email из профиля
+    const email = getEmailFromProfile();
+    if (!email) {
+        hairHistoryList.innerHTML = '<li>Не удалось получить email.</li>';
+        return;
+    }
+
+    // Логируем email, для которого ищем записи
+    console.log('Ищем записи для email:', email);
 
     // Переключение текста на кнопке и отображение/скрытие истории
     if (historyTitle.style.display === 'none') {
@@ -190,7 +204,7 @@ async function toggleHistory() {
 
         // Получаем данные из API и отображаем их
         try {
-            const response = await fetch('http://localhost:3000/api/hair-profile'); // Обновленный URL
+            const response = await fetch(`http://localhost:3000/api/hair-profile?email=${encodeURIComponent(email)}`);
 
             if (!response.ok) {
                 throw new Error('Ошибка при получении данных с сервера');
@@ -211,7 +225,7 @@ async function toggleHistory() {
                     // Проверяем, если дата изменилась, добавляем новый заголовок для этой даты
                     if (recordDate !== currentDate) {
                         const dateHeader = document.createElement('h4');
-                        dateHeader.textContent = `${recordDate}`;
+                        dateHeader.textContent = `История за ${recordDate}`;
                         dateHeader.style.fontWeight = 'bold';
                         dateHeader.style.marginTop = '20px';
                         hairHistoryList.appendChild(dateHeader);
@@ -249,35 +263,28 @@ async function toggleHistory() {
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-// Функция для переключения между состояниями кнопки "История" и отображением истории для состояния кожи
+// История для волос
 async function toggleSkinHistory() {
-    const skinHistoruButton = document.querySelector('.skin-historu-button'); // Используем новый класс
+    const skinHistoruButton = document.querySelector('.skin-historu-button');
     const SkinHistoryTitle = document.getElementById('skinHistoryTitle');
     const skinHistoryList = document.getElementById('skinHistoryList');
+
+    // Получаем email из профиля
+    const email = getEmailFromProfile();
+    if (!email) {
+        console.error('Email не найден.');
+        skinHistoryList.innerHTML = '<li>Не удалось найти email.</li>';
+        return;
+    }
 
     // Переключение текста на кнопке и отображение/скрытие истории
     if (SkinHistoryTitle.style.display === 'none') {
         SkinHistoryTitle.style.display = 'block';
         skinHistoruButton.textContent = 'Закрыть';
 
-        // Лог, когда мы начинаем получать данные
-        console.log("Обращаемся к серверу для получения данных о состоянии кожи.");
-
         // Получаем данные из API и отображаем их
         try {
-            const response = await fetch('http://localhost:3000/api/face-profile'); // Обновленный URL для face-profile
+            const response = await fetch(`http://localhost:3000/api/face-profile?email=${encodeURIComponent(email)}`);
 
             // Лог ответа от сервера
             console.log("Ответ от сервера получен:", response);
@@ -303,7 +310,7 @@ async function toggleSkinHistory() {
 
                     // Проверяем, если дата изменилась, добавляем новый заголовок для этой даты
                     if (recordDate !== currentDate) {
-                        const dateHeader = document.createElement('h3');
+                        const dateHeader = document.createElement('h4');
                         dateHeader.textContent = `История за ${recordDate}`;
                         dateHeader.style.fontWeight = 'bold';
                         dateHeader.style.marginTop = '20px';
@@ -344,8 +351,6 @@ async function toggleSkinHistory() {
         skinHistoruButton.textContent = 'История';
     }
 }
-
-
 
 // Запускаем наблюдение при загрузке страницы
 document.addEventListener('DOMContentLoaded', observeProfileContainer);

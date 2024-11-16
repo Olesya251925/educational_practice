@@ -145,14 +145,20 @@ app.post('/api/save-skin-profile', async (req, res) => {
 
 // Эндпоинт для получения всех данных из таблицы hair_profile
 app.get('/api/hair-profile', async (req, res) => {
-    console.log("Запрос на /api/hair-profile");
+
+    const email = req.query.email ? req.query.email.trim() : null;
+
+    if (!email) {
+        return res.status(400).json({ message: 'Email не предоставлен' });
+    }
+
+    console.log('Ищем записи для email:', email);
 
     try {
         const client = await pool.connect();
-        console.log("Соединение с базой установлено");
 
-        const result = await client.query('SELECT * FROM hair_profile');
-        console.log("Данные из базы:", result.rows);
+        // Запрос с фильтрацией по email
+        const result = await client.query('SELECT * FROM hair_profile WHERE email = $1', [email]);
 
         client.release();
         res.status(200).json(result.rows);
@@ -163,12 +169,26 @@ app.get('/api/hair-profile', async (req, res) => {
 });
 
 
+
+
+// Эндпоинт для получения всех данных из таблицы face_profile
 app.get('/api/face-profile', async (req, res) => {
     try {
-        console.log("Получаем данные из базы данных...");
+
+        // Получаем email из параметров запроса
+        const email = req.query.email ? req.query.email.trim() : null;
+
+        if (!email) {
+            return res.status(400).json({ message: 'Email не предоставлен' });
+        }
+
         const client = await pool.connect();
-        const result = await client.query('SELECT * FROM face_profile');
+
+        // Выполняем запрос с фильтрацией по email
+        const result = await client.query('SELECT * FROM face_profile WHERE email = $1', [email]);
+
         client.release();
+
         console.log("Данные получены:", result.rows);
         res.status(200).json(result.rows);
     } catch (error) {
@@ -176,10 +196,6 @@ app.get('/api/face-profile', async (req, res) => {
         res.status(500).json({ message: 'Ошибка при получении данных.' });
     }
 });
-
-
-
-
 
 // Запуск сервера
 const PORT = 3000;
