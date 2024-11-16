@@ -12,29 +12,43 @@ function displayPhotoErrorMessage() {
     }
 }
 
+// Функция для обработки загрузки фотографии волос
+function handleHairPhotoUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            document.getElementById('hairPhotoDataUrl').value = e.target.result;
+
+            // Отображаем превью загруженной фотографии
+            const previewImg = document.getElementById('hairPhotoPreview');
+            if (previewImg) {
+                previewImg.src = e.target.result;
+                previewImg.style.display = 'block';
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+}
 
 // Функция для сохранения данных о волосах
 function saveHairData(event) {
-    event.preventDefault(); // Отменяем стандартное поведение формы (перезагрузку страницы)
+    event.preventDefault();
 
-    // Получаем элементы формы и проверяем их наличие
-    const userEmailElement = document.getElementById('profileEmail'); // Извлекаем email из элемента с id="profileEmail"
+    const userEmailElement = document.getElementById('profileEmail');
     const hairConditionElement = document.getElementById('hairCondition');
     const hairTypeElement = document.getElementById('hairType');
     const hairPorosityElement = document.getElementById('hairPorosity');
     const scalpConditionElement = document.getElementById('scalpCondition');
     const hairWashFrequencyElement = document.getElementById('hairWashFrequency');
-    const hairPhotoElement = document.getElementById('hairPhoto');
-
-    // Извлекаем email из элемента, если он существует
-    const email = userEmailElement ? userEmailElement.textContent : null;
+    const hairPhotoDataUrl = document.getElementById('hairPhotoDataUrl').value;
 
     resetErrors();
 
     let hasError = false;
 
-    if (!hairPhotoElement.files.length) {
-        showError(hairPhotoElement);
+    if (!hairPhotoDataUrl) {
+        showError(document.getElementById('hairPhoto'));
         displayPhotoErrorMessage();
         hasError = true;
     }
@@ -68,29 +82,22 @@ function saveHairData(event) {
         return;
     }
 
-    // Проверяем, существуют ли элементы и создаем объект с данными
     const hairData = {
-        email: email, // Получаем email из профиля
-        hairCondition: hairConditionElement ? hairConditionElement.value : null,
-        hairType: hairTypeElement ? hairTypeElement.value : null,
-        hairPorosity: hairPorosityElement ? hairPorosityElement.value : null,
-        usesHeatProtection: scalpConditionElement ? scalpConditionElement.value : null,
-        hairWashFrequency: hairWashFrequencyElement ? hairWashFrequencyElement.value : null,
-        hairPhoto: hairPhotoElement && hairPhotoElement.files[0] ? hairPhotoElement.files[0].name : null
+        email: userEmailElement ? userEmailElement.textContent : null,
+        hairCondition: hairConditionElement.value,
+        hairType: hairTypeElement.value,
+        hairPorosity: hairPorosityElement.value,
+        usesHeatProtection: scalpConditionElement.value,
+        hairWashFrequency: hairWashFrequencyElement.value,
+        hairPhoto: hairPhotoDataUrl
     };
 
-    // Отправляем данные на сервер для сохранения
     fetch('http://localhost:3000/api/save-hair-profile', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(hairData), // Преобразуем объект в JSON
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(hairData)
     })
-        .then(response => {
-            console.log('Ответ от сервера:', response); // Логируем ответ от сервера
-            return response.json(); // Преобразуем в JSON, чтобы получить данные
-        })
+        .then(response => response.json())
         .then(data => {
             console.log('Полученные данные от сервера:', data);
             alert('Данные успешно сохранены!');
@@ -101,7 +108,48 @@ function saveHairData(event) {
             alert('Ошибка при сохранении данных.');
         });
 
+    removePhotoPreview('hairPhotoPreview');
 }
+
+// Функция для загрузки данных о волосах
+function loadHairData() {
+    const userEmailElement = document.getElementById('profileEmail');
+    const email = userEmailElement ? userEmailElement.textContent : null;
+
+    if (!email) {
+        console.error('Email пользователя не найден');
+        return;
+    }
+
+    fetch(`http://localhost:3000/api/get-hair-profile/${email}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.hairCondition) document.getElementById('hairCondition').value = data.hairCondition;
+            if (data.hairType) document.getElementById('hairType').value = data.hairType;
+            if (data.hairPorosity) document.getElementById('hairPorosity').value = data.hairPorosity;
+            if (data.usesHeatProtection) document.getElementById('scalpCondition').value = data.usesHeatProtection;
+            if (data.hairWashFrequency) document.getElementById('hairWashFrequency').value = data.hairWashFrequency;
+
+            if (data.hairPhoto) {
+                const previewImg = document.getElementById('hairPhotoPreview');
+                if (previewImg) {
+                    previewImg.src = data.hairPhoto;
+                    previewImg.style.display = 'block';
+                }
+                document.getElementById('hairPhotoDataUrl').value = data.hairPhoto;
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка при загрузке данных о волосах:', error);
+        });
+}
+
+// Вызываем функцию загрузки данных при инициализации страницы
+window.onload = function () {
+    initGoogleAuth();
+    handleAuthResult();
+    loadHairData(); // Добавляем вызов функции загрузки данных о волосах
+};
 
 function showError(inputElement) {
     inputElement.style.borderColor = 'red';
@@ -142,11 +190,30 @@ function addPhotoErrorText() {
     }
 }
 
+
+// Функция для обработки загрузки фотографии лица
+function handleFacePhotoUpload(event) {
+    const file = event.target.files[0];  // Получаем загруженный файл
+    if (file) {
+        const reader = new FileReader();  // Создаем новый объект FileReader
+        reader.onload = function (e) {
+            document.getElementById('facePhotoDataUrl').value = e.target.result;  // Сохраняем ссылку на изображение в hidden поле
+
+            // Отображаем превью загруженной фотографии
+            const previewImg = document.getElementById('facePhotoPreview');
+            if (previewImg) {
+                previewImg.src = e.target.result;  // Присваиваем ссылку на изображение
+                previewImg.style.display = 'block';  // Показываем изображение
+            }
+        };
+        reader.readAsDataURL(file);  // Читаем файл как Data URL
+    }
+}
+
 function saveSkinData(event) {
     event.preventDefault(); // Останавливаем стандартное поведение формы
 
-    // Получаем email из элемента, содержащего почту
-    const userEmailElement = document.getElementById('profileEmail'); // Элемент, где хранится email
+    const userEmailElement = document.getElementById('profileEmail');
     const email = userEmailElement ? userEmailElement.textContent.trim() : null; // Извлекаем email
 
     if (!email) {
@@ -154,82 +221,72 @@ function saveSkinData(event) {
         return;
     }
 
-    // Получаем данные из формы
     const skinConditionElement = document.getElementById('skinCondition');
     const skinHydrationElement = document.getElementById('skinHydration');
     const hasRashesElement = document.getElementById('hasRashes');
     const wearsMakeupElement = document.getElementById('wearsMakeup');
     const usesSunscreenElement = document.getElementById('usesSunscreen');
-    const facePhotoElement = document.getElementById('facePhoto');
-
-    // Собираем данные в объект
-    const skinData = {
-        email: email,
-        skinCondition: skinConditionElement ? skinConditionElement.value : null,
-        skinHydration: skinHydrationElement ? skinHydrationElement.value : null,
-        hasRashes: hasRashesElement ? hasRashesElement.value : null,
-        wearsMakeup: wearsMakeupElement ? wearsMakeupElement.value : null,
-        usesSunscreen: usesSunscreenElement ? usesSunscreenElement.value : null,
-        facePhoto: facePhotoElement && facePhotoElement.files[0] ? facePhotoElement.files[0].name : null
-    };
-
-    clearErrors();
-
-    // Логируем итоговые данные
-    console.log('Собранные данные:', skinData);
+    const facePhotoDataUrl = document.getElementById('facePhotoDataUrl').value;
 
     let hasErrors = false;
 
-    if (!skinData.skinCondition) {
+    if (!skinConditionElement.value) {
         showError(skinConditionElement);
         hasErrors = true;
     }
-    if (!skinData.skinHydration) {
+    if (!skinHydrationElement.value) {
         showError(skinHydrationElement);
         hasErrors = true;
     }
-    if (!skinData.hasRashes) {
+    if (!hasRashesElement.value) {
         showError(hasRashesElement);
         hasErrors = true;
     }
-    if (!skinData.wearsMakeup) {
+    if (!wearsMakeupElement.value) {
         showError(wearsMakeupElement);
         hasErrors = true;
     }
-    if (!skinData.usesSunscreen) {
+    if (!usesSunscreenElement.value) {
         showError(usesSunscreenElement);
         hasErrors = true;
     }
 
-    if (!skinData.facePhoto) {
-        addPhotoErrorText();
+    if (!facePhotoDataUrl) {
+        showError(document.getElementById('facePhoto'));
         hasErrors = true;
     }
 
-    if (hasErrors) {
-        return;
-    }
+    if (hasErrors) return;
 
-    // Отправляем данные на сервер для сохранения
+    const skinData = {
+        email: email,
+        skinCondition: skinConditionElement.value,
+        skinHydration: skinHydrationElement.value,
+        hasRashes: hasRashesElement.value,
+        wearsMakeup: wearsMakeupElement.value,
+        usesSunscreen: usesSunscreenElement.value,
+        facePhoto: facePhotoDataUrl
+    };
+
     fetch('http://localhost:3000/api/save-skin-profile', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(skinData), // Преобразуем объект в JSON
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(skinData)
     })
         .then(response => response.json())
         .then(data => {
-            console.log('Ответ от сервера:', data);
-            // Выводим сообщение о том, что данные были успешно сохранены
+            console.log('Полученные данные от сервера:', data);
             alert('Данные успешно сохранены!');
-            clearForm();
+            clearForm();  // Очищаем форму
         })
         .catch(error => {
             console.error('Ошибка при отправке данных:', error);
             alert('Ошибка при сохранении данных.');
         });
+
+    removePhotoPreview('facePhotoPreview');
 }
+
 
 // Функция для очистки всех полей формы
 function clearForm() {
@@ -245,8 +302,27 @@ function clearForm() {
 
     // Очистить все сообщения об ошибках
     resetErrors();
+
+    // Очистить превью изображения
+    const previewImages = document.querySelectorAll('.photo-preview');  // Подберите правильный класс или ID для изображений
+    previewImages.forEach(img => {
+        img.src = '';  // Убираем ссылку на изображение
+        img.style.display = 'none';  // Прячем изображение
+    });
+
+    // Очистить значения в hidden полях для изображения
+    const photoDataUrls = document.querySelectorAll('input[type="hidden"]');
+    photoDataUrls.forEach(input => {
+        input.value = '';  // Очищаем значение поля с URL изображения
+    });
 }
 
+function removePhotoPreview(photoPreviewId) {
+    const photoPreview = document.getElementById(photoPreviewId);
+    if (photoPreview) {
+        photoPreview.style.display = 'none'; // Скрывает изображение
+    }
+}
 
 
 document.addEventListener('DOMContentLoaded', generateTrackingForms);

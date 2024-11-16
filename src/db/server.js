@@ -169,8 +169,6 @@ app.get('/api/hair-profile', async (req, res) => {
 });
 
 
-
-
 // Эндпоинт для получения всех данных из таблицы face_profile
 app.get('/api/face-profile', async (req, res) => {
     try {

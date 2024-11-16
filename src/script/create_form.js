@@ -9,67 +9,67 @@ function generateTrackingForms() {
 
     // Форма для состояния волос
     const hairForm = `
-        <form id="hairForm" onsubmit="saveHairData(event)" style="width: 48%;">
-            <h3>Состояние волос</h3>
-            
-            <label for="hairCondition" class="form-label">Выберите состояние волос:</label>
-            <select id="hairCondition" name="hairCondition" required class="form-select">
-                <option disabled selected></option>
-                <option value="Здоровые">Здоровые</option>
-                <option value="Сухие">Сухие</option>
-                <option value="Поврежденные">Поврежденные</option>
-                <option value="Тонкие">Тонкие</option>
-                <option value="Жирные">Жирные</option>
-            </select>
+       <form id="hairForm" onsubmit="saveHairData(event)" style="width: 48%;">
+    <h3>Состояние волос</h3>
+    
+    <label for="hairCondition" class="form-label">Выберите состояние волос:</label>
+    <select id="hairCondition" name="hairCondition" required class="form-select">
+        <option disabled selected></option>
+        <option value="Здоровые">Здоровые</option>
+        <option value="Сухие">Сухие</option>
+        <option value="Поврежденные">Поврежденные</option>
+        <option value="Тонкие">Тонкие</option>
+        <option value="Жирные">Жирные</option>
+    </select>
 
-            <label for="hairType" class="form-label">Тип волос:</label>
-            <select id="hairType" name="hairType" required class="form-select">
-                <option disabled selected></option>
-                <option value="Прямые">Прямые</option>
-                <option value="Волнистые">Волнистые</option>
-                <option value="Кудрявые">Кудрявые</option>
-            </select>
+    <label for="hairType" class="form-label">Тип волос:</label>
+    <select id="hairType" name="hairType" required class="form-select">
+        <option disabled selected></option>
+        <option value="Прямые">Прямые</option>
+        <option value="Волнистые">Волнистые</option>
+        <option value="Кудрявые">Кудрявые</option>
+    </select>
 
-            <label for="hairPorosity" class="form-label">Пористость волос:</label>
-            <select id="hairPorosity" name="hairPorosity" required class="form-select">
-                <option disabled selected></option>
-                <option value="Низкая">Низкая</option>
-                <option value="Средняя">Средняя</option>
-                <option value="Высокая">Высокая</option>
-            </select>
+    <label for="hairPorosity" class="form-label">Пористость волос:</label>
+    <select id="hairPorosity" name="hairPorosity" required class="form-select">
+        <option disabled selected></option>
+        <option value="Низкая">Низкая</option>
+        <option value="Средняя">Средняя</option>
+        <option value="Высокая">Высокая</option>
+    </select>
 
-            <label for="scalpCondition" class="form-label">Вы используете термозащиту?</label>
-            <select id="scalpCondition" name="scalpCondition" required class="form-select">
-                <option disabled selected></option>
-                <option value="Да">Да</option>
-                <option value="Нет">Нет</option>
-            </select>
+    <label for="scalpCondition" class="form-label">Вы используете термозащиту?</label>
+    <select id="scalpCondition" name="scalpCondition" required class="form-select">
+        <option disabled selected></option>
+        <option value="Да">Да</option>
+        <option value="Нет">Нет</option>
+    </select>
 
-            <div class="more-tracking-options">
-                <label for="hairWashFrequency" class="form-label">Насколько часто вы моете голову?</label>
-                <select id="hairWashFrequency" name="hairWashFrequency" required class="form-select">
-                    <option disabled selected></option>
-                    <option value="Ежедневно">Ежедневно</option>
-                    <option value="2-3 раза в неделю">2-3 раза в неделю</option>
-                    <option value="Раз в неделю">Раз в неделю</option>
-                    <option value="Реже">Реже</option>
-                </select>
-            </div>
-
-            <label for="hairPhoto" class="form-label">Загрузите фото ваших волос:</label>
-            <input id="hairPhoto" name="hairPhoto" type="file" accept="image/*" class="form-input">
-
-           <button type="submit" class="form-button">Сохранить</button>
-
-    <!-- История состояния волос перед кнопкой -->
-    <div id="hairHistoryTitle" style="display: none;">
-        <h4>История состояния волос:</h4>
-           <ul id="hairHistoryList" style="margin: 0; padding: 0;"></ul> 
+    <div class="more-tracking-options">
+        <label for="hairWashFrequency" class="form-label">Насколько часто вы моете голову?</label>
+        <select id="hairWashFrequency" name="hairWashFrequency" required class="form-select">
+            <option disabled selected></option>
+            <option value="Ежедневно">Ежедневно</option>
+            <option value="2-3 раза в неделю">2-3 раза в неделю</option>
+            <option value="Раз в неделю">Раз в неделю</option>
+            <option value="Реже">Реже</option>
+        </select>
     </div>
 
-    <!-- Кнопка История -->
+    <label for="hairPhoto" class="form-label">Загрузите фото ваших волос:</label>
+    <input id="hairPhoto" name="hairPhoto" type="file" accept="image/*" class="form-input" onchange="handleHairPhotoUpload(event)">
+    <input type="hidden" id="hairPhotoDataUrl" name="hairPhotoDataUrl">
+    <img id="hairPhotoPreview" style="display: none; max-width: 200px; margin-top: 10px;">
+
+    <button type="submit" class="form-button">Сохранить</button>
+
+    <div id="hairHistoryTitle" style="display: none;">
+        <h4>История состояния волос:</h4>
+        <ul id="hairHistoryList" style="margin: 0; padding: 0;"></ul> 
+    </div>
+
     <button type="button" class="form-button history-button" onclick="toggleHistory()">История</button>
-        </form>
+</form>
     `;
 
     // Форма для состояния кожи
@@ -117,9 +117,10 @@ function generateTrackingForms() {
             <option value="Только летом">Только летом</option>
         </select>
 
-        <!-- Загрузка фото -->
-        <label for="facePhoto" class="form-label">Загрузите фото вашей кожи:</label>
-        <input id="facePhoto" name="facePhoto" type="file" accept="image/*" class="form-input" />
+        <label for="facePhoto" class="form-label">Загрузите фото вашего лица:</label>
+    <input id="facePhoto" name="facePhoto" type="file" accept="image/*" class="form-input" onchange="handleFacePhotoUpload(event)">
+    <input type="hidden" id="facePhotoDataUrl" name="facePhotoDataUrl"> <!-- Скрытое поле для хранения Data URL -->
+    <img id="facePhotoPreview" style="display: none; max-width: 200px; margin-top: 10px;"> <!-- Превью изображения -->
 
           <button type="submit" class="form-button">Сохранить</button>
 
@@ -241,12 +242,11 @@ async function toggleHistory() {
 
                     // Оформление данных
                     listItem.innerHTML = `
-                        <p><strong>Email:</strong> ${record.email}</p>
                         <p><strong>Тип волос:</strong> ${record.hair_type}</p>
                         <p><strong>Пористость:</strong> ${record.hair_porosity}</p>
                         <p><strong>Термозащита:</strong> ${record.uses_heat_protection}</p>
                         <p><strong>Частота мытья:</strong> ${record.hair_wash_frequency}</p>
-                        <p><strong>Фото волос:</strong> <img src="${record.hair_photo}" alt="Фото волос" style="max-width: 100px; height: auto;" /></p>
+                        <p><strong>Фото волос:</strong> <img src="${record.hair_photo}" alt="Фото волос" style="max-width: 200px; height: auto;" /></p>
                     `;
                     hairHistoryList.appendChild(listItem);
                 });
@@ -327,13 +327,12 @@ async function toggleSkinHistory() {
 
                     // Оформление данных
                     listItem.innerHTML = `
-                        <p><strong>Email:</strong> ${record.email}</p>
                         <p><strong>Состояние кожи:</strong> ${record.skin_condition}</p>
                         <p><strong>Уровень увлажненности:</strong> ${record.skin_hydration}</p>
                         <p><strong>Высыпания:</strong> ${record.has_rashes}</p>
                         <p><strong>Макияж:</strong> ${record.wears_makeup}</p>
                         <p><strong>Солнцезащитные средства:</strong> ${record.uses_sunscreen}</p>
-                        <p><strong>Фото:</strong> ${record.face_photo ? `<img src="${record.face_photo}" alt="Фото кожи" />` : 'Нет фото'}</p>
+                         <p><strong>Фото лица:</strong> ${record.face_photo ? `<img src="${record.face_photo}" alt="Фото кожи" style="max-width: 200px; height: auto;"/>` : 'Нет фото'}</p>
                     `;
                     skinHistoryList.appendChild(listItem);
                 });
