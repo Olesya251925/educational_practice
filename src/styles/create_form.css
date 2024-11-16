@@ -100,14 +100,38 @@ form button.history-button:hover {
     margin-top: 15px;
 }
 
-form button.skin-history-button {
+form button.skin-historu-button {
     background-color: #FFA500;
 }
 
-form button.skin-history-button:hover {
+form button.skin-historu-button:hover {
     background-color: #FF8C00;
 }
 
-.skin-history-button {
+.skin-historu-button {
     margin-top: 15px;
+}
+
+#hairHistoryList {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    padding: 20px;
+}
+
+#hairHistoryList h3 {
+    font-size: 1.5em;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+#hairHistoryList div {
+    margin-bottom: 15px;
+}
+
+#hairHistoryList p {
+    margin: 5px 0;
+}
+
+#hairHistoryList img {
+    border-radius: 5px;
 }

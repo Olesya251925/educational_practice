@@ -143,22 +143,42 @@ app.post('/api/save-skin-profile', async (req, res) => {
     }
 });
 
-
 // Эндпоинт для получения всех данных из таблицы hair_profile
 app.get('/api/hair-profile', async (req, res) => {
+    console.log("Запрос на /api/hair-profile");
+
     try {
-        const result = await pool.query('SELECT * FROM hair_profile');
+        const client = await pool.connect();
+        console.log("Соединение с базой установлено");
 
-        // Выводим все данные в консоль
-        console.log(result.rows);
+        const result = await client.query('SELECT * FROM hair_profile');
+        console.log("Данные из базы:", result.rows);
 
-        // Отправляем данные в ответе
+        client.release();
         res.status(200).json(result.rows);
     } catch (error) {
         console.error('Ошибка при получении данных из таблицы hair_profile:', error);
         res.status(500).json({ message: 'Ошибка при получении данных.' });
     }
 });
+
+
+app.get('/api/face-profile', async (req, res) => {
+    try {
+        console.log("Получаем данные из базы данных...");
+        const client = await pool.connect();
+        const result = await client.query('SELECT * FROM face_profile');
+        client.release();
+        console.log("Данные получены:", result.rows);
+        res.status(200).json(result.rows);
+    } catch (error) {
+        console.error('Ошибка при получении данных из таблицы face_profile:', error);
+        res.status(500).json({ message: 'Ошибка при получении данных.' });
+    }
+});
+
+
+
 
 
 // Запуск сервера
