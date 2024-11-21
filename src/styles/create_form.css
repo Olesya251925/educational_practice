@@ -112,112 +112,59 @@ form button.skin-historu-button:hover {
     margin-top: 15px;
 }
 
-#hairHistoryList {
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-    padding: 20px;
-    background-color: #f4f4f4;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-#hairHistoryList h3 {
-    font-size: 1.5em;
-    color: #333;
-    margin-bottom: 10px;
-    font-weight: bold;
-}
-
-#hairHistoryList div {
-    margin-bottom: 20px;
-    padding: 20px;
-    background-color: #ffffff;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-
-#hairHistoryList div:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-}
-
-#hairHistoryList p {
-    margin: 10px 0;
-    font-size: 1.1em;
-    color: #444;
-}
-
-#hairHistoryList strong {
-    color: #3e3e3e;
-    font-weight: bold;
-}
-
-#hairHistoryList img {
-    border-radius: 8px;
-    max-width: 100%;
-    height: auto;
-    display: block;
-    margin-top: 15px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-}
-
-
-
-.history-button {
-    z-index: 1;
-}
-
-
-/* Убираем маркер списка и делаем элементы блока */
-#ecoGoodsList {
-    list-style-type: none;
-    /* Убираем стандартные маркеры списка */
-    padding: 0;
-    margin: 0;
-}
-
 .eco-good-item {
     display: flex;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-    margin-bottom: 20px;
-    padding: 10px;
+    justify-content: space-between;
     align-items: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 10px 0;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.eco-good-item img {
-    width: 120px;
-    height: auto;
+.eco-good-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+    background-color: #e0f2ff;
+}
+
+.eco-good-image {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
     border-radius: 8px;
     margin-right: 20px;
 }
 
 .eco-good-info {
-    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    max-width: 250px;
+    text-align: right;
 }
 
 .eco-good-name {
     font-size: 18px;
     font-weight: bold;
+    color: #333;
     margin-bottom: 8px;
 }
 
 .eco-good-usage {
     font-size: 14px;
-    margin-bottom: 4px;
+    color: #555;
 }
 
-/* Опционально: Добавим стиль при наведении */
-.eco-good-item:hover {
-    background-color: #e8f1f9;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-}
-
-.eco-good-item img:hover {
-    transform: scale(1.05);
-    transition: transform 0.2s ease-in-out;
+h5 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #8A53FF;
+    margin-bottom: 15px;
+    text-align: center;
 }

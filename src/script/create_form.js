@@ -85,7 +85,7 @@ function generateTrackingForms() {
     <button type="submit" class="form-button">Сохранить</button>
 
     <div id="hairHistoryTitle" style="display: none;">
-        <h4>История состояния волос:</h4>
+        <h3>История состояния волос:</h3>
         <ul id="hairHistoryList" style="margin: 0; padding: 0;"></ul>
              <div id="ecoGoods" style="display: none;">
                 <h4>Эко товары</h4>
@@ -211,7 +211,6 @@ async function toggleHistory() {
     const historyButton = document.querySelector('.history-button');
     const historyTitle = document.getElementById('hairHistoryTitle');
     const hairHistoryList = document.getElementById('hairHistoryList');
-    const ecoGoods = document.getElementById('ecoGoods');
     const ecoGoodsList = document.getElementById('ecoGoodsList');
 
     // Получаем email из профиля
@@ -243,7 +242,8 @@ async function toggleHistory() {
             if (data.length > 0) {
                 let currentDate = '';
 
-                data.forEach(record => {
+                for (let i = 0; i < data.length; i++) {
+                    const record = data[i];
                     const recordDate = new Date(record.created_at).toLocaleDateString();
 
                     if (recordDate !== currentDate) {
@@ -251,6 +251,9 @@ async function toggleHistory() {
                         dateHeader.textContent = `История за ${recordDate}`;
                         dateHeader.style.fontWeight = 'bold';
                         dateHeader.style.marginTop = '20px';
+                        dateHeader.style.textAlign = 'center';
+                        dateHeader.style.color = '#8A53FF';
+                        dateHeader.style.fontSize = '22px';
                         hairHistoryList.appendChild(dateHeader);
                         currentDate = recordDate;
                     }
@@ -263,50 +266,60 @@ async function toggleHistory() {
                     listItem.style.backgroundColor = '#f9f9f9';
 
                     listItem.innerHTML = `
-                        <p><strong>Состояние волос:</strong> ${record.hair_condition}</p>
-                        <p><strong>Тип волос:</strong> ${record.hair_type}</p>
-                        <p><strong>Пористость:</strong> ${record.hair_porosity}</p>
-                        <p><strong>Термозащита:</strong> ${record.uses_heat_protection}</p>
-                        <p><strong>Частота мытья:</strong> ${record.hair_wash_frequency}</p>
-                        <p><strong>Секущиеся кончики:</strong> ${record.split_ends}</p>
-                        <p><strong>Окрашенные волосы:</strong> ${record.colored_hair}</p>
-                        <p><strong>Выпадение волос:</strong> ${record.hair_loss}</p>
-                        <p><strong>Фото волос:</strong> <img src="${record.hair_photo}" alt="Фото волос" style="max-width: 200px; height: auto;" /></p>
-                    `;
+                    <p style="font-size: 20px;"><strong>Состояние волос:</strong> ${record.hair_condition}</p>
+                    <p style="font-size: 20px;"><strong>Тип волос:</strong> ${record.hair_type}</p>
+                    <p style="font-size: 20px;"><strong>Пористость:</strong> ${record.hair_porosity}</p>
+                    <p style="font-size: 20px;"><strong>Термозащита:</strong> ${record.uses_heat_protection}</p>
+                    <p style="font-size: 20px;"><strong>Частота мытья:</strong> ${record.hair_wash_frequency}</p>
+                    <p style="font-size: 20px;"><strong>Секущиеся кончики:</strong> ${record.split_ends}</p>
+                    <p style="font-size: 20px;"><strong>Окрашенные волосы:</strong> ${record.colored_hair}</p>
+                    <p style="font-size: 20px;"><strong>Выпадение волос:</strong> ${record.hair_loss}</p>
+                    <p style="font-size: 20px;"><strong>Фото волос:</strong> <img src="${record.hair_photo}" alt="Фото волос" style="max-width: 200px; height: auto;" /></p>
+                `;
+
                     hairHistoryList.appendChild(listItem);
-                });
 
-                ecoGoods.style.display = 'block';
+                    // Добавляем товары для текущей записи
+                    try {
+                        const ecoResponse = await fetch(`http://localhost:3000/api/eco-goods?hairCondition=${encodeURIComponent(record.hair_condition)}&email=${encodeURIComponent(email)}`);
+                        if (ecoResponse.ok) {
+                            const ecoGoodsData = await ecoResponse.json();
 
-                // Используем последнюю (самую новую) запись для получения текущего состояния волос
-                const currentHairCondition = data[data.length - 1].hair_condition;
-                try {
-                    const ecoResponse = await fetch(`http://localhost:3000/api/eco-goods?hairCondition=${encodeURIComponent(currentHairCondition)}&email=${encodeURIComponent(email)}`);
-                    if (ecoResponse.ok) {
-                        const ecoGoodsData = await ecoResponse.json();
+                            // Проверяем, есть ли эко товары для текущей записи
+                            if (ecoGoodsData.length > 0) {
+                                // Создаем заголовок для эко товаров
+                                const ecoGoodsTitle = document.createElement('h5');
+                                ecoGoodsTitle.textContent = 'Эко товары для этой записи:';
+                                listItem.appendChild(ecoGoodsTitle); // Добавляем заголовок в запись
 
-                        ecoGoodsList.innerHTML = '';
+                                // Перебираем все товары и добавляем их под заголовок
+                                ecoGoodsData.forEach(item => {
+                                    const ecoItem = document.createElement('div');
+                                    ecoItem.classList.add('eco-good-item');  // Класс для стилизации товара
 
-                        ecoGoodsData.forEach(item => {
-                            const listItem = document.createElement('div');
-                            listItem.classList.add('eco-good-item');  // Добавляем класс для стилизации
+                                    ecoItem.innerHTML = `
+                    <img src="${item.image_url}" alt="${item.name}" class="eco-good-image">
+                    <div class="eco-good-info">
+                        <h5 class="eco-good-name">${item.name}</h5>
+                        <p class="eco-good-usage"><strong>Применение:</strong> ${item.usage}</p>
+                    </div>
+                `;
 
-                            listItem.innerHTML = `
-                                <img src="${item.image_url}" alt="${item.name}" class="eco-good-image">
-                                <div class="eco-good-info">
-                                    <h5 class="eco-good-name">${item.name}</h5>
-                                  
-                                    <p class="eco-good-usage"><strong>Применение:</strong> ${item.usage}</p>
-                                </div>
-                            `;
-                            ecoGoodsList.appendChild(listItem);
-                        });
-                    } else {
-                        throw new Error('Ошибка при получении данных эко товаров');
+                                    listItem.appendChild(ecoItem); // Добавляем товар непосредственно в запись
+                                });
+                            } else {
+                                const noEcoGoodsMessage = document.createElement('p');
+                                noEcoGoodsMessage.textContent = 'Нет доступных эко товаров для этого состояния волос.';
+                                listItem.appendChild(noEcoGoodsMessage);
+                            }
+                        } else {
+                            throw new Error('Ошибка при получении данных эко товаров');
+                        }
+                    } catch (error) {
+                        console.error('Ошибка при загрузке эко товаров:', error);
+                        alert('Ошибка при загрузке эко товаров.');
                     }
-                } catch (error) {
-                    console.error('Ошибка при загрузке эко товаров:', error);
-                    alert('Ошибка при загрузке эко товаров.');
+
                 }
             } else {
                 hairHistoryList.innerHTML = '<li>История пуста.</li>';
@@ -318,7 +331,7 @@ async function toggleHistory() {
     } else {
         historyTitle.style.display = 'none';
         historyButton.textContent = 'История';
-        ecoGoods.style.display = 'none';
+        ecoGoodsList.style.display = 'none';
     }
 }
 
