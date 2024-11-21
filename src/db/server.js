@@ -236,6 +236,7 @@ app.get('/api/eco-goods', async (req, res) => {
     const hairCondition = req.query.hairCondition;
     const coloredHair = req.query.coloredHair;
     const splitEnds = req.query.splitEnds;
+    const hairLoss = req.query.hairLoss;
 
     console.log('Полученные параметры:', { hairCondition, coloredHair, splitEnds });
 
@@ -267,6 +268,13 @@ app.get('/api/eco-goods', async (req, res) => {
             conditions.push('id IN (13, 14, 15)');
         } else if (splitEnds === 'Нет') {
             conditions.push('id = 11');
+        }
+
+        // Добавляем фильтрацию по выпадению волос
+        if (hairLoss === 'Да') {
+            conditions.push('id IN (18, 25)');
+        } else if (hairLoss === 'Нет') {
+
         }
 
         // Если нет условий, возвращаем ошибку
