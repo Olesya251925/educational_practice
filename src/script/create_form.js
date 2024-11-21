@@ -86,10 +86,15 @@ function generateTrackingForms() {
 
     <div id="hairHistoryTitle" style="display: none;">
         <h4>История состояния волос:</h4>
-        <ul id="hairHistoryList" style="margin: 0; padding: 0;"></ul> 
+        <ul id="hairHistoryList" style="margin: 0; padding: 0;"></ul>
+             <div id="ecoGoods" style="display: none;">
+                <h4>Эко товары</h4>
+                <ul id="ecoGoodsList"></ul>
+        </div> 
     </div>
 
     <button type="button" class="form-button history-button" onclick="toggleHistory()">История</button>
+
 </form>
     `;
 
@@ -202,11 +207,12 @@ function getEmailFromProfile() {
     return null;
 }
 
-
 async function toggleHistory() {
     const historyButton = document.querySelector('.history-button');
     const historyTitle = document.getElementById('hairHistoryTitle');
     const hairHistoryList = document.getElementById('hairHistoryList');
+    const ecoGoods = document.getElementById('ecoGoods');
+    const ecoGoodsList = document.getElementById('ecoGoodsList');
 
     // Получаем email из профиля
     const email = getEmailFromProfile();
@@ -215,7 +221,6 @@ async function toggleHistory() {
         return;
     }
 
-    // Логируем email, для которого ищем записи
     console.log('Ищем записи для email:', email);
 
     // Переключение текста на кнопке и отображение/скрытие истории
@@ -231,19 +236,16 @@ async function toggleHistory() {
                 throw new Error('Ошибка при получении данных с сервера');
             }
 
-            const data = await response.json(); // разбираем JSON
+            const data = await response.json();
 
-            // Очищаем список перед добавлением новых данных
             hairHistoryList.innerHTML = '';
 
-            // Если данные есть, добавляем их в список
             if (data.length > 0) {
                 let currentDate = '';
 
                 data.forEach(record => {
                     const recordDate = new Date(record.created_at).toLocaleDateString();
 
-                    // Проверяем, если дата изменилась, добавляем новый заголовок для этой даты
                     if (recordDate !== currentDate) {
                         const dateHeader = document.createElement('h4');
                         dateHeader.textContent = `История за ${recordDate}`;
@@ -260,33 +262,69 @@ async function toggleHistory() {
                     listItem.style.borderRadius = '8px';
                     listItem.style.backgroundColor = '#f9f9f9';
 
-                    // Оформление данных
                     listItem.innerHTML = `
-    <p><strong>Тип волос:</strong> ${record.hair_type}</p>
-    <p><strong>Пористость:</strong> ${record.hair_porosity}</p>
-    <p><strong>Термозащита:</strong> ${record.uses_heat_protection}</p>
-    <p><strong>Частота мытья:</strong> ${record.hair_wash_frequency}</p>
-    <p><strong>Секущиеся кончики:</strong> ${record.split_ends}</p>
-    <p><strong>Окрашенные волосы:</strong> ${record.colored_hair}</p>
-    <p><strong>Выпадение волос:</strong> ${record.hair_loss}</p>
-    <p><strong>Фото волос:</strong> <img src="${record.hair_photo}" alt="Фото волос" style="max-width: 200px; height: auto;" /></p>
-`;
-
+                        <p><strong>Состояние волос:</strong> ${record.hair_condition}</p>
+                        <p><strong>Тип волос:</strong> ${record.hair_type}</p>
+                        <p><strong>Пористость:</strong> ${record.hair_porosity}</p>
+                        <p><strong>Термозащита:</strong> ${record.uses_heat_protection}</p>
+                        <p><strong>Частота мытья:</strong> ${record.hair_wash_frequency}</p>
+                        <p><strong>Секущиеся кончики:</strong> ${record.split_ends}</p>
+                        <p><strong>Окрашенные волосы:</strong> ${record.colored_hair}</p>
+                        <p><strong>Выпадение волос:</strong> ${record.hair_loss}</p>
+                        <p><strong>Фото волос:</strong> <img src="${record.hair_photo}" alt="Фото волос" style="max-width: 200px; height: auto;" /></p>
+                    `;
                     hairHistoryList.appendChild(listItem);
-
                 });
+
+                ecoGoods.style.display = 'block';
+
+                // Используем последнюю (самую новую) запись для получения текущего состояния волос
+                const currentHairCondition = data[data.length - 1].hair_condition;
+                try {
+                    const ecoResponse = await fetch(`http://localhost:3000/api/eco-goods?hairCondition=${encodeURIComponent(currentHairCondition)}&email=${encodeURIComponent(email)}`);
+                    if (ecoResponse.ok) {
+                        const ecoGoodsData = await ecoResponse.json();
+
+                        ecoGoodsList.innerHTML = '';
+
+                        ecoGoodsData.forEach(item => {
+                            const listItem = document.createElement('div');
+                            listItem.classList.add('eco-good-item');  // Добавляем класс для стилизации
+
+                            listItem.innerHTML = `
+                                <img src="${item.image_url}" alt="${item.name}" class="eco-good-image">
+                                <div class="eco-good-info">
+                                    <h5 class="eco-good-name">${item.name}</h5>
+                                  
+                                    <p class="eco-good-usage"><strong>Применение:</strong> ${item.usage}</p>
+                                </div>
+                            `;
+                            ecoGoodsList.appendChild(listItem);
+                        });
+                    } else {
+                        throw new Error('Ошибка при получении данных эко товаров');
+                    }
+                } catch (error) {
+                    console.error('Ошибка при загрузке эко товаров:', error);
+                    alert('Ошибка при загрузке эко товаров.');
+                }
             } else {
                 hairHistoryList.innerHTML = '<li>История пуста.</li>';
             }
         } catch (error) {
+            console.error('Ошибка при загрузке данных:', error);
             hairHistoryList.innerHTML = '<li>Ошибка при загрузке данных.</li>';
         }
-
     } else {
         historyTitle.style.display = 'none';
         historyButton.textContent = 'История';
+        ecoGoods.style.display = 'none';
     }
 }
+
+
+
+
 
 // История для лица
 async function toggleSkinHistory() {
@@ -378,3 +416,4 @@ async function toggleSkinHistory() {
 
 // Запускаем наблюдение при загрузке страницы
 document.addEventListener('DOMContentLoaded', observeProfileContainer);
+

@@ -81,7 +81,6 @@ app.get('/api/clean_products', async (req, res) => {
     }
 });
 
-// Эндпоинт для сохранения данных профиля волос
 app.post('/api/save-hair-profile', async (req, res) => {
     const {
         email,
@@ -93,21 +92,35 @@ app.post('/api/save-hair-profile', async (req, res) => {
         hairPhoto,
         splitEnds,
         coloredHair,
-        hairLoss
+        hairLoss,
+        ecoProducts // получаем новые данные о эко товарах
     } = req.body;
+
+    // Логируем полученные данные
+    console.log('Полученные данные для сохранения в базе данных:');
+    console.log({
+        email,
+        hairCondition,
+        hairType,
+        hairPorosity,
+        usesHeatProtection,
+        hairWashFrequency,
+        hairPhoto,
+        splitEnds,
+        coloredHair,
+        hairLoss,
+        ecoProducts // данные о эко товарах
+    });
+
+
 
     try {
         const client = await pool.connect(); // Подключаемся к базе данных
 
-        // Проверим, если данные корректны (например, проверка наличия email)
-        if (!email) {
-            return res.status(400).json({ message: 'Email обязателен' });
-        }
-
         // SQL-запрос для вставки данных в таблицу hair_profile
         const query = `
-            INSERT INTO hair_profile (email, hair_condition, hair_type, hair_porosity, uses_heat_protection, hair_wash_frequency, hair_photo, split_ends, colored_hair, hair_loss)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+            INSERT INTO hair_profile (email, hair_condition, hair_type, hair_porosity, uses_heat_protection, hair_wash_frequency, hair_photo, split_ends, colored_hair, hair_loss, eco_products)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
         `;
 
         const values = [
@@ -120,7 +133,8 @@ app.post('/api/save-hair-profile', async (req, res) => {
             hairPhoto,
             splitEnds,
             coloredHair,
-            hairLoss
+            hairLoss,
+            ecoProducts // сохраняем эко товары в базе данных
         ];
 
         // Выполняем запрос
@@ -218,8 +232,44 @@ app.get('/api/face-profile', async (req, res) => {
     }
 });
 
+app.get('/api/eco-goods', async (req, res) => {
+    const hairCondition = req.query.hairCondition;
+    const email = req.query.email;
+
+    console.log('Полученное состояние волос:', hairCondition);
+
+    try {
+        let query = '';
+
+        if (hairCondition === 'Сухие') {
+            query = `SELECT image_url, name, composition, usage FROM clean_products WHERE id IN (4, 7, 8)`;
+        } else if (hairCondition === 'Жирные') {
+            query = `SELECT image_url, name, composition, usage FROM clean_products WHERE id = 5`;
+        } else if (hairCondition === 'Здоровые') {
+            query = `SELECT image_url, name, composition, usage FROM clean_products WHERE id = 6`;
+        } else {
+            return res.status(400).json({ message: 'Неизвестное состояние волос' });
+        }
+
+        const result = await pool.query(query);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'Товары не найдены для данного состояния волос' });
+        }
+
+        res.json(result.rows);
+
+
+    } catch (error) {
+        console.error('Ошибка при получении данных из БД:', error);
+        res.status(500).json({ error: 'Ошибка сервера' });
+    }
+});
+
+
 // Запуск сервера
 const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Сервер запущен на http://localhost:${PORT}`);
 });
+
