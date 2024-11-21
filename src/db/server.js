@@ -234,37 +234,69 @@ app.get('/api/face-profile', async (req, res) => {
 
 app.get('/api/eco-goods', async (req, res) => {
     const hairCondition = req.query.hairCondition;
-    const email = req.query.email;
+    const coloredHair = req.query.coloredHair;
+    const splitEnds = req.query.splitEnds;
 
-    console.log('Полученное состояние волос:', hairCondition);
+    console.log('Полученные параметры:', { hairCondition, coloredHair, splitEnds });
 
     try {
-        let query = '';
+        const conditions = [];
 
-        if (hairCondition === 'Сухие') {
-            query = `SELECT image_url, name, composition, usage FROM clean_products WHERE id IN (4, 7, 8)`;
+        // Добавляем фильтрацию по состоянию волос
+        if (hairCondition === 'Здоровые') {
+            conditions.push('id IN (9, 11, 22, 26)');
+        } else if (hairCondition === 'Сухие') {
+            conditions.push('id IN (4, 10)');
+        } else if (hairCondition === 'Поврежденные') {
+            conditions.push('id IN (1, 4, 6, 19, 24)');
+        } else if (hairCondition === 'Тонкие') {
+            conditions.push('id IN (2, 5, 10, 20, 21)');
         } else if (hairCondition === 'Жирные') {
-            query = `SELECT image_url, name, composition, usage FROM clean_products WHERE id = 5`;
-        } else if (hairCondition === 'Здоровые') {
-            query = `SELECT image_url, name, composition, usage FROM clean_products WHERE id = 6`;
-        } else {
-            return res.status(400).json({ message: 'Неизвестное состояние волос' });
+            conditions.push('id IN (2, 8)');
         }
 
+        // Добавляем фильтрацию по окрашенным волосам
+        if (coloredHair === 'Да') {
+            conditions.push('id IN (16, 7, 17, 23)');
+        } else if (coloredHair === 'Нет') {
+            conditions.push('id = 27');
+        }
+
+        // Добавляем фильтрацию по секущимся кончикам
+        if (splitEnds === 'Да') {
+            conditions.push('id IN (13, 14, 15)');
+        } else if (splitEnds === 'Нет') {
+            conditions.push('id = 11');
+        }
+
+        // Если нет условий, возвращаем ошибку
+        if (conditions.length === 0) {
+            return res.status(400).json({ message: 'Не указаны параметры фильтрации' });
+        }
+
+        // Формируем запрос
+        const query = `
+            SELECT image_url, name, composition, usage 
+            FROM clean_products 
+            WHERE ${conditions.join(' OR ')}
+        `;
+
+        console.log('Сформированный запрос:', query);
+
+        // Выполняем запрос к БД
         const result = await pool.query(query);
 
         if (result.rows.length === 0) {
-            return res.status(404).json({ message: 'Товары не найдены для данного состояния волос' });
+            return res.status(404).json({ message: 'Товары не найдены для указанных условий' });
         }
 
         res.json(result.rows);
-
-
     } catch (error) {
         console.error('Ошибка при получении данных из БД:', error);
         res.status(500).json({ error: 'Ошибка сервера' });
     }
 });
+
 
 
 // Запуск сервера

@@ -281,7 +281,7 @@ async function toggleHistory() {
 
                     // Добавляем товары для текущей записи
                     try {
-                        const ecoResponse = await fetch(`http://localhost:3000/api/eco-goods?hairCondition=${encodeURIComponent(record.hair_condition)}&email=${encodeURIComponent(email)}`);
+                        const ecoResponse = await fetch(`http://localhost:3000/api/eco-goods?hairCondition=${encodeURIComponent(record.hair_condition)}&coloredHair=${encodeURIComponent(record.colored_hair)}&splitEnds=${encodeURIComponent(record.split_ends)}&email=${encodeURIComponent(email)}`);
                         if (ecoResponse.ok) {
                             const ecoGoodsData = await ecoResponse.json();
 
