@@ -237,6 +237,7 @@ app.get('/api/eco-goods', async (req, res) => {
     const coloredHair = req.query.coloredHair;
     const splitEnds = req.query.splitEnds;
     const hairLoss = req.query.hairLoss;
+    const hairWashFrequency = req.query.hairWashFrequency;
 
     console.log('Полученные параметры:', { hairCondition, coloredHair, splitEnds });
 
@@ -275,6 +276,11 @@ app.get('/api/eco-goods', async (req, res) => {
             conditions.push('id IN (18, 25)');
         } else if (hairLoss === 'Нет') {
 
+        }
+
+        // Добавляем фильтрацию по частоте мытья волос
+        if (hairWashFrequency === 'Ежедневно') {
+            conditions.push('id IN (5, 8 )');
         }
 
         // Если нет условий, возвращаем ошибку
