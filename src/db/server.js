@@ -151,23 +151,32 @@ app.post('/api/save-hair-profile', async (req, res) => {
 
 // Эндпоинт для сохранения данных профиля кожи
 app.post('/api/save-skin-profile', async (req, res) => {
-    const { email, skinCondition, skinHydration, hasRashes, wearsMakeup, usesSunscreen, facePhoto } = req.body;
+    const {
+        email,
+        skinCondition,
+        skinHydration,
+        hasRashes,
+        wearsMakeup,
+        usesSunscreen,
+        facePhoto,
+        ecoProducts // Добавлен новый параметр
+    } = req.body;
 
     try {
         const client = await pool.connect(); // Подключаемся к базе данных
 
-        // Проверим, если данные корректны (например, проверка наличия email)
+        // Проверим корректность входных данных
         if (!email) {
             return res.status(400).json({ message: 'Email обязателен' });
         }
 
         // SQL-запрос для вставки данных в таблицу face_profile
         const query = `
-            INSERT INTO face_profile (email, skin_condition, skin_hydration, has_rashes, wears_makeup, uses_sunscreen, face_photo)
-            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            INSERT INTO face_profile (email, skin_condition, skin_hydration, has_rashes, wears_makeup, uses_sunscreen, face_photo, eco_products)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
         `;
 
-        const values = [email, skinCondition, skinHydration, hasRashes, wearsMakeup, usesSunscreen, facePhoto];
+        const values = [email, skinCondition, skinHydration, hasRashes, wearsMakeup, usesSunscreen, facePhoto, ecoProducts];
 
         // Выполняем запрос
         await client.query(query, values);
@@ -179,6 +188,7 @@ app.post('/api/save-skin-profile', async (req, res) => {
         res.status(500).json({ message: 'Ошибка при сохранении данных' });
     }
 });
+
 
 // Эндпоинт для получения всех данных из таблицы hair_profile
 app.get('/api/hair-profile', async (req, res) => {
@@ -238,6 +248,10 @@ app.get('/api/eco-goods', async (req, res) => {
     const splitEnds = req.query.splitEnds;
     const hairLoss = req.query.hairLoss;
     const hairWashFrequency = req.query.hairWashFrequency;
+    const skinCondition = req.query.skinCondition;
+    const skinHydration = req.query.skinHydration;
+    const hasRashes = req.query.hasRashes;
+    const usesSunscreen = req.query.usesSunscreen;
 
     console.log('Полученные параметры:', { hairCondition, coloredHair, splitEnds });
 
@@ -281,6 +295,36 @@ app.get('/api/eco-goods', async (req, res) => {
         // Добавляем фильтрацию по частоте мытья волос
         if (hairWashFrequency === 'Ежедневно') {
             conditions.push('id IN (5, 8 )');
+        }
+
+        // Добавляем фильтрацию по состоянию кожи
+        if (skinCondition === 'Сухая') {
+            conditions.push('id = 35');
+        } else if (skinCondition === 'Жирная') {
+            conditions.push('id = 52');
+        } else if (skinCondition === 'Нормальная') {
+            conditions.push('id IN (38, 47)');
+        } else if (skinCondition === 'Чувствительная') {
+            conditions.push('id IN (34, 29)');
+        }
+
+        //Уровень увлажненности
+        if (skinHydration === 'Влажная') {
+            conditions.push('id IN (52, 46)');
+        } else if (skinHydration === 'Сухая' || skinHydration === 'Очень сухая') {
+            conditions.push('id IN (31, 53)');
+        } else if (skinHydration === 'Нормальная') {
+            conditions.push('id = 54');
+        }
+
+        //Проблемная кожа
+        if (hasRashes === 'Да') {
+            conditions.push('id IN (41, 46, 40)');
+        }
+
+        //Имеются ли у вас морщины
+        if (usesSunscreen === 'Да') {
+            conditions.push('id IN (42, 43, 36, 49)');
         }
 
         // Если нет условий, возвращаем ошибку

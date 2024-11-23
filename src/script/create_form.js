@@ -149,11 +149,14 @@ function generateTrackingForms() {
 
           <button type="submit" class="form-button">Сохранить</button>
 
-    <!-- История состояния кожи перед кнопкой -->
     <div id="skinHistoryTitle" style="display: none;">
-        <h4>История состояния кожи:</h4>
-         <ul id="skinHistoryList"></ul>
+    <h3>История состояния кожи:</h3>
+    <ul id="skinHistoryList" style="margin: 0; padding: 0;"></ul>
+    <div id="skinEcoGoods" style="display: none;">
+        <h4>Эко товары:</h4>
+        <ul id="skinEcoGoodsList"></ul>
     </div>
+</div>
 
     <!-- Кнопка История -->
     <button type="button" class="form-button skin-historu-button" onclick="toggleSkinHistory()">История</button>
@@ -352,14 +355,10 @@ async function toggleHistory() {
 }
 
 
-
-
-
-
 // История для лица
 async function toggleSkinHistory() {
-    const skinHistoruButton = document.querySelector('.skin-historu-button');
-    const SkinHistoryTitle = document.getElementById('skinHistoryTitle');
+    const skinHistoryButton = document.querySelector('.skin-historu-button');
+    const skinHistoryTitle = document.getElementById('skinHistoryTitle');
     const skinHistoryList = document.getElementById('skinHistoryList');
 
     // Получаем email из профиля
@@ -371,42 +370,36 @@ async function toggleSkinHistory() {
     }
 
     // Переключение текста на кнопке и отображение/скрытие истории
-    if (SkinHistoryTitle.style.display === 'none') {
-        SkinHistoryTitle.style.display = 'block';
-        skinHistoruButton.textContent = 'Закрыть';
+    if (skinHistoryTitle.style.display === 'none') {
+        skinHistoryTitle.style.display = 'block';
+        skinHistoryButton.textContent = 'Закрыть';
 
         // Получаем данные из API и отображаем их
         try {
             const response = await fetch(`http://localhost:3000/api/face-profile?email=${encodeURIComponent(email)}`);
 
-            // Лог ответа от сервера
-            console.log("Ответ от сервера получен:", response);
-
             if (!response.ok) {
                 throw new Error('Ошибка при получении данных с сервера');
             }
 
-            const data = await response.json(); // разбираем JSON
+            const data = await response.json();
 
-            // Логируем полученные данные
-            console.log("Полученные данные:", data);
-
-            // Очищаем список перед добавлением новых данных
             skinHistoryList.innerHTML = '';
 
-            // Если данные есть, добавляем их в список
             if (data.length > 0) {
                 let currentDate = '';
 
-                data.forEach(record => {
+                for (let record of data) {
                     const recordDate = new Date(record.created_at).toLocaleDateString();
 
-                    // Проверяем, если дата изменилась, добавляем новый заголовок для этой даты
                     if (recordDate !== currentDate) {
                         const dateHeader = document.createElement('h4');
                         dateHeader.textContent = `История за ${recordDate}`;
                         dateHeader.style.fontWeight = 'bold';
                         dateHeader.style.marginTop = '20px';
+                        dateHeader.style.textAlign = 'center';
+                        dateHeader.style.color = '#8A53FF';
+                        dateHeader.style.fontSize = '22px';
                         skinHistoryList.appendChild(dateHeader);
                         currentDate = recordDate;
                     }
@@ -418,31 +411,94 @@ async function toggleSkinHistory() {
                     listItem.style.borderRadius = '8px';
                     listItem.style.backgroundColor = '#f9f9f9';
 
-                    // Оформление данных
                     listItem.innerHTML = `
-                        <p><strong>Состояние кожи:</strong> ${record.skin_condition}</p>
-                        <p><strong>Уровень увлажненности:</strong> ${record.skin_hydration}</p>
-                        <p><strong>Высыпания:</strong> ${record.has_rashes}</p>
-                        <p><strong>Макияж:</strong> ${record.wears_makeup}</p>
-                        <p><strong>Солнцезащитные средства:</strong> ${record.uses_sunscreen}</p>
-                         <p><strong>Фото лица:</strong> ${record.face_photo ? `<img src="${record.face_photo}" alt="Фото кожи" style="max-width: 200px; height: auto;"/>` : 'Нет фото'}</p>
-                    `;
+    <p style="font-size: 20px;"><strong>Состояние кожи:</strong> ${record.skin_condition}</p>
+    <p style="font-size: 20px;"><strong>Уровень увлажненности:</strong> ${record.skin_hydration}</p>
+    <p style="font-size: 20px;"><strong>Высыпания:</strong> ${record.has_rashes}</p>
+    <p style="font-size: 20px;"><strong>Макияж:</strong> ${record.wears_makeup}</p>
+    <p style="font-size: 20px;"><strong>Солнцезащитные средства:</strong> ${record.uses_sunscreen}</p>
+    <p style="font-size: 20px;"><strong>Фото лица:</strong> ${record.face_photo ? `<img src="${record.face_photo}" alt="Фото кожи" style="max-width: 200px; height: auto;"/>` : 'Нет фото'}</p>
+`;
                     skinHistoryList.appendChild(listItem);
-                });
+
+
+                    // Кнопка "Показать товары"
+                    const showGoodsButton = document.createElement('button');
+                    showGoodsButton.textContent = 'Показать товары';
+                    showGoodsButton.classList.add('toggle-goods-button');
+                    showGoodsButton.style.marginTop = '10px';
+                    showGoodsButton.style.padding = '5px 10px';
+                    showGoodsButton.style.backgroundColor = '#8A53FF';
+                    showGoodsButton.style.color = 'white';
+                    showGoodsButton.style.border = 'none';
+                    showGoodsButton.style.borderRadius = '5px';
+                    showGoodsButton.style.cursor = 'pointer';
+
+                    listItem.appendChild(showGoodsButton);
+
+                    // Логика кнопки "Показать/Скрыть товары"
+                    showGoodsButton.addEventListener('click', async () => {
+                        event.preventDefault();
+                        const goodsVisible = showGoodsButton.textContent === 'Скрыть товары';
+
+                        if (goodsVisible) {
+                            const ecoItems = listItem.querySelectorAll('.eco-good-item');
+                            ecoItems.forEach(item => item.remove());
+                            showGoodsButton.textContent = 'Показать товары';
+                        } else {
+                            try {
+                                const ecoResponse = await fetch(
+                                    `http://localhost:3000/api/eco-goods?skinCondition=${encodeURIComponent(record.skin_condition)}&hasRashes=${encodeURIComponent(record.has_rashes)}&usesSunscreen=${encodeURIComponent(record.uses_sunscreen)}&wearsMakeup=${encodeURIComponent(record.wears_makeup)}&email=${encodeURIComponent(email)}`
+                                );
+
+                                if (ecoResponse.ok) {
+                                    const ecoGoodsData = await ecoResponse.json();
+
+                                    if (ecoGoodsData.length > 0) {
+                                        ecoGoodsData.forEach(item => {
+                                            const ecoItem = document.createElement('div');
+                                            ecoItem.classList.add('eco-good-item');
+                                            ecoItem.innerHTML = `
+                                                <img src="${item.image_url}" alt="${item.name}" class="eco-good-image" style="max-width: 100px; height: auto; margin-bottom: 10px;">
+                                                <div class="eco-good-info">
+                                                    <h5 class="eco-good-name" style="margin: 0;">${item.name}</h5>
+                                                    <p class="eco-good-usage"><strong>Применение:</strong> ${item.usage}</p>
+                                                </div>
+                                            `;
+                                            listItem.insertBefore(ecoItem, showGoodsButton);
+                                        });
+                                    } else {
+                                        const noEcoGoodsMessage = document.createElement('p');
+                                        noEcoGoodsMessage.textContent = 'Нет доступных эко товаров для данного состояния кожи.';
+                                        listItem.insertBefore(noEcoGoodsMessage, showGoodsButton);
+                                    }
+                                    showGoodsButton.textContent = 'Скрыть товары';
+                                } else {
+                                    throw new Error('Ошибка при получении данных эко товаров');
+                                }
+                            } catch (error) {
+                                console.error('Ошибка при загрузке эко товаров:', error);
+                                alert('Ошибка при загрузке эко товаров.');
+                            }
+                        }
+                    });
+
+
+
+                }
             } else {
                 skinHistoryList.innerHTML = '<li>История пуста.</li>';
             }
         } catch (error) {
-            // Логируем ошибку
-            console.error('Ошибка при получении данных из таблицы face_profile:', error);
+            console.error('Ошибка при загрузке данных:', error);
             skinHistoryList.innerHTML = '<li>Ошибка при загрузке данных.</li>';
         }
-
     } else {
-        SkinHistoryTitle.style.display = 'none';
-        skinHistoruButton.textContent = 'История';
+        skinHistoryTitle.style.display = 'none';
+        skinHistoryButton.textContent = 'История';
     }
 }
+
 
 // Запускаем наблюдение при загрузке страницы
 document.addEventListener('DOMContentLoaded', observeProfileContainer);
