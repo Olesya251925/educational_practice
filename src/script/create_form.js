@@ -416,7 +416,7 @@ async function toggleSkinHistory() {
     <p style="font-size: 20px;"><strong>Уровень увлажненности:</strong> ${record.skin_hydration}</p>
     <p style="font-size: 20px;"><strong>Высыпания:</strong> ${record.has_rashes}</p>
     <p style="font-size: 20px;"><strong>Макияж:</strong> ${record.wears_makeup}</p>
-    <p style="font-size: 20px;"><strong>Солнцезащитные средства:</strong> ${record.uses_sunscreen}</p>
+    <p style="font-size: 20px;"><strong>Морщины:</strong> ${record.uses_sunscreen}</p>
     <p style="font-size: 20px;"><strong>Фото лица:</strong> ${record.face_photo ? `<img src="${record.face_photo}" alt="Фото кожи" style="max-width: 200px; height: auto;"/>` : 'Нет фото'}</p>
 `;
                     skinHistoryList.appendChild(listItem);
