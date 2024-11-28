@@ -234,7 +234,6 @@ app.get('/api/face-profile', async (req, res) => {
 
         client.release();
 
-        console.log("Данные получены:", result.rows);
         res.status(200).json(result.rows);
     } catch (error) {
         console.error('Ошибка при получении данных из таблицы face_profile:', error);
