@@ -237,6 +237,9 @@ async function toggleHistory() {
 
             const data = await response.json();
 
+            // Сортировка данных по дате (от старой к новой)
+            data.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+
             hairHistoryList.innerHTML = '';
 
             if (data.length > 0) {
@@ -383,6 +386,9 @@ async function toggleSkinHistory() {
             }
 
             const data = await response.json();
+
+            // Сортировка данных по дате (от старой к новой)
+            data.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
 
             skinHistoryList.innerHTML = '';
 

@@ -64,7 +64,6 @@ function loadProfileData(token) {
         })
         .then(profile => {
             console.log('Данные профиля:', profile);
-            const email = profile.email;
             document.getElementById('profileContainer').innerHTML = `
                 <img id="profilePicture" src="${profile.picture}" alt="Аватар пользователя">
                 <div class="profile-details">
@@ -94,12 +93,11 @@ function loadProfileData(token) {
             profileContainer.classList.remove('hidden'); // Показываем контейнер профиля
 
             // Загружаем данные из базы данных
-            loadProfileFromDatabase(email);
+            loadProfileFromDatabase(profile.email);
         })
         .catch(error => {
             console.error('Ошибка загрузки данных профиля:', error);
-            const profileContainer = document.getElementById('profileContainer');
-            profileContainer.classList.add('hidden'); // Скрываем контейнер профиля при ошибке
+            hideTrackingForms(); // Скрываем формы при ошибке
             showAuthModal(); // Открываем модальное окно
         });
 }
@@ -165,7 +163,6 @@ function goBack() {
     loadProfileData(localStorage.getItem('access_token'));
 }
 
-
 // Переключение режима редактирования профиля
 function toggleEditProfile() {
     const editSection = document.getElementById('editSection');
@@ -213,17 +210,22 @@ function saveProfileData() {
 
 // Выход из аккаунта
 function handleGoogleLogout() {
-    localStorage.removeItem('access_token');
-    hideTrackingForms();
-    closeModal();
+    localStorage.removeItem('access_token'); // Удаляем токен
+    hideTrackingForms(); // Скрываем формы при выходе
+    closeModal(); // Закрываем модальное окно
+
+    // Очищаем контейнер профиля
     document.getElementById('profileContainer').innerHTML = '';
-    toggleProfileContainer(false);
-    showAuthModal();
+    toggleProfileContainer(false); // Скрываем контейнер профиля
+    showAuthModal(); // Показываем окно аутентификации
+
+    // Перезагрузка страницы для обновления состояния
+    location.reload(); // Перезагружаем страницу
 }
+
 
 // Инициализация при загрузке страницы
 window.onload = function () {
     initGoogleAuth();
     handleAuthResult();
 };
-

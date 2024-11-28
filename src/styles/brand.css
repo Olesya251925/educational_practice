@@ -1,0 +1,71 @@
+.brand-container {
+    font-family: 'Arial', sans-serif;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.brand-text {
+    flex: 1;
+    padding-right: 20px;
+}
+
+.brand-logo-container {
+    width: 150px;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 100px;
+}
+
+.brand-title {
+    font-size: 28px;
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.sub-heading {
+    font-size: 22px;
+    color: #282729;
+    margin-top: 20px;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.brand-description {
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 15px;
+}
+
+.important-factors .brand-list,
+.cosmos-standard .brand-list,
+.audit-process .brand-list {
+    font-size: 16px;
+    line-height: 1.6;
+    padding-left: 20px;
+}
+
+.brand-list li {
+    margin-bottom: 10px;
+}
+
+.brand-logo {
+    width: 100%;
+    height: auto;
+    max-width: 150px;
+}
+
+.brand-list {
+    font-size: 16px;
+    line-height: 1.6;
+    padding-left: 20px;
+    list-style-type: none;
+}
